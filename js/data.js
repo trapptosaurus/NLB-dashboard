@@ -10,7 +10,7 @@ export const kpiData = {
             data: {
                 2025: { plan: 1.2, actual: 1.2 },
                 2026: { plan: 1.35, actual: 1.35 },
-                2027: { plan: 1.5, actual: 1.5 },
+                2027: { plan: 1.5, actual: 1.43 },
                 2028: { plan: 1.65, actual: null },
                 2029: { plan: 1.8, actual: null },
                 2030: { plan: 2.0, actual: null }
@@ -26,7 +26,7 @@ export const kpiData = {
             data: {
                 2025: { plan: 0.55, actual: 0.55 },
                 2026: { plan: 0.65, actual: 0.65 },
-                2027: { plan: 0.75, actual: 0.75 },
+                2027: { plan: 0.75, actual: 0.64 },
                 2028: { plan: 0.85, actual: null },
                 2029: { plan: 0.95, actual: null },
                 2030: { plan: 1.0, actual: null }
@@ -58,7 +58,7 @@ export const kpiData = {
             data: {
                 2025: { plan: 18, actual: 18 },
                 2026: { plan: 17, actual: 17 },
-                2027: { plan: 16.5, actual: 16.5 },
+                2027: { plan: 16.5, actual: 15.5 },
                 2028: { plan: 16, actual: null },
                 2029: { plan: 15.5, actual: null },
                 2030: { plan: 15, actual: null }
@@ -188,7 +188,7 @@ export const kpiData = {
             data: {
                 2025: { plan: 2.8, actual: 2.8 },
                 2026: { plan: 2.85, actual: 2.85 },
-                2027: { plan: 2.9, actual: 2.9 },
+                2027: { plan: 2.9, actual: 2.78 },
                 2028: { plan: 2.93, actual: null },
                 2029: { plan: 2.96, actual: null },
                 2030: { plan: 3.0, actual: null }
@@ -222,7 +222,7 @@ export const kpiData = {
             data: {
                 2025: { plan: 13, actual: 13 },
                 2026: { plan: 14, actual: 14 },
-                2027: { plan: 15, actual: 15 },
+                2027: { plan: 15, actual: 13.8 },
                 2028: { plan: 17, actual: null },
                 2029: { plan: 18.5, actual: null },
                 2030: { plan: 20, actual: null }
