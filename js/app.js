@@ -7,6 +7,10 @@ const state = {
     isEditorMode: false,
     currentYear: 2027,
     sortByStatus: false,
+    thresholds: {
+        onTrack: 2, // % deviation allowed for On Track
+        warning: 10 // % deviation allowed for Warning (Slightly Off)
+    },
     charts: {} // Store chart instances to update them
 };
 
@@ -34,6 +38,12 @@ function getStatus(kpi) {
     // For higher_better: (Actual - Plan) / Plan
     // For lower_better: (Plan - Actual) / Plan
 
+    if (kpi.displayType === 'qualitative') {
+        if (actual >= plan) return 'on-track';
+        if (actual >= plan - 1) return 'warning';
+        return 'off-track';
+    }
+
     let deviation = 0;
     if (plan !== 0) {
         if (kpi.type === 'higher_better') {
@@ -41,20 +51,34 @@ function getStatus(kpi) {
         } else if (kpi.type === 'lower_better') {
             deviation = (plan - actual) / plan;
         } else {
-            // Range: Check if within +/- 10% of plan (arbitrary for demo)
+            // Range: Check if within +/- X% of plan
             const diff = Math.abs(actual - plan);
-            const threshold = plan * 0.1;
-            if (diff <= threshold) return 'on-track';
+            const onTrackThreshold = plan * (state.thresholds.onTrack / 100);
+
+            if (diff <= onTrackThreshold) return 'on-track';
+
             // If outside range, check how far
-            const dist = diff - threshold;
-            if (dist < plan * 0.1) return 'warning';
+            const warningThreshold = plan * (state.thresholds.warning / 100);
+            if (diff <= warningThreshold) return 'warning';
+
             return 'off-track';
         }
     }
 
     if (kpi.type !== 'range') {
-        if (deviation >= -0.02) return 'on-track'; // Allow small 2% miss
-        if (deviation >= -0.10) return 'warning'; // Within 10% miss
+        // Convert deviation to percentage for comparison (deviation is e.g. -0.05 for -5%)
+        // We care about negative deviation for higher_better (underperformance)
+        // and positive deviation for lower_better (underperformance, already handled by sign flip above?)
+        // Actually, the formula above (actual-plan)/plan gives negative if actual < plan (bad for higher_better)
+        // For lower_better: (plan-actual)/plan gives negative if actual > plan (bad for lower_better)
+
+        // So in both cases, negative deviation means "worse than plan".
+
+        const onTrackLimit = -(state.thresholds.onTrack / 100);
+        const warningLimit = -(state.thresholds.warning / 100);
+
+        if (deviation >= onTrackLimit) return 'on-track';
+        if (deviation >= warningLimit) return 'warning';
         return 'off-track';
     }
 
@@ -195,9 +219,16 @@ function renderDashboard() {
     kpis.forEach(kpi => {
         const status = getStatus(kpi);
         const yearData = kpi.data[state.currentYear];
-        const actual = yearData ? yearData.actual : '-';
-        const plan = yearData ? yearData.plan : '-';
-        const target2030 = kpi.data[2030].plan;
+        let actual = yearData ? yearData.actual : '-';
+        let plan = yearData ? yearData.plan : '-';
+        let target2030 = kpi.data[2030].plan;
+
+        if (kpi.displayType === 'qualitative') {
+            const map = { 1: 'Below', 2: 'Inline', 3: 'Above' };
+            actual = map[actual] || '-';
+            plan = map[plan] || '-';
+            target2030 = map[target2030] || '-';
+        }
 
         const card = document.createElement('div');
         card.className = 'kpi-card';
@@ -247,9 +278,46 @@ function renderDashboard() {
 function renderEditor() {
     // Inject Current Year selector for Editor too
     const editorHeader = document.querySelector('.editor-container h3');
-    if (!document.getElementById('editor-year-select')) {
-        // This is a bit hacky, but simple for now. 
-        // Ideally we'd have a dedicated toolbar in the editor.
+
+    // Inject Threshold Controls
+    let thresholdControls = document.getElementById('threshold-controls');
+    if (!thresholdControls) {
+        thresholdControls = document.createElement('div');
+        thresholdControls.id = 'threshold-controls';
+        thresholdControls.style.marginBottom = '1.5rem';
+        thresholdControls.style.padding = '1rem';
+        thresholdControls.style.background = '#f8fafc';
+        thresholdControls.style.borderRadius = '0.5rem';
+        thresholdControls.style.border = '1px solid #e2e8f0';
+        thresholdControls.innerHTML = `
+            <h4 style="font-size: 0.9rem; margin-bottom: 0.75rem; color: #475569;">Global Status Parameters</h4>
+            <div style="display: flex; gap: 2rem; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <label style="font-size: 0.85rem; color: #64748b;">On Track Tolerance:</label>
+                    <input type="number" id="threshold-ontrack" value="${state.thresholds.onTrack}" style="width: 60px; padding: 0.25rem; border: 1px solid #cbd5e1; border-radius: 0.25rem;">
+                    <span style="font-size: 0.85rem; color: #64748b;">%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <label style="font-size: 0.85rem; color: #64748b;">Slightly Off Limit:</label>
+                    <input type="number" id="threshold-warning" value="${state.thresholds.warning}" style="width: 60px; padding: 0.25rem; border: 1px solid #cbd5e1; border-radius: 0.25rem;">
+                    <span style="font-size: 0.85rem; color: #64748b;">%</span>
+                </div>
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-left: auto;">
+                    (Deviation > Limit = Off Track)
+                </div>
+            </div>
+        `;
+        editorHeader.after(thresholdControls);
+
+        // Add listeners for thresholds
+        document.getElementById('threshold-ontrack').addEventListener('change', (e) => {
+            state.thresholds.onTrack = parseFloat(e.target.value);
+            renderEditor(); // Re-render to update statuses
+        });
+        document.getElementById('threshold-warning').addEventListener('change', (e) => {
+            state.thresholds.warning = parseFloat(e.target.value);
+            renderEditor();
+        });
     }
 
     const kpis = kpiData[state.currentView === 'overall' ? 'group' : state.currentView]; // Default to group if overall
@@ -260,7 +328,7 @@ function renderEditor() {
         <th style="width: 30px"></th> <!-- Drag Handle -->
         <th>KPI Details</th>
         <th>Category</th>
-        <th>Status (${state.currentYear})</th>
+        <th>Status</th>
         ${[2025, 2026, 2027, 2028, 2029, 2030].map(y => {
         const isCurrent = y === state.currentYear;
         const bgStyle = isCurrent ? 'background-color: #eff6ff; color: #1e3a8a;' : '';
@@ -268,6 +336,8 @@ function renderEditor() {
     }).join('')}
         <th style="width: 30px"></th> <!-- Delete -->
     `;
+
+    editorTableBody.innerHTML = ''; // Clear existing rows
 
     kpis.forEach((kpi, index) => {
         const row = document.createElement('tr');
@@ -303,12 +373,41 @@ function renderEditor() {
             const isCurrent = year === state.currentYear;
             const bgStyle = isCurrent ? 'background-color: #eff6ff;' : ''; // Light blue highlight
 
-            cells += `
-                <td style="${bgStyle}">
+            let inputHtml = '';
+            if (kpi.displayType === 'qualitative') {
+                const options = [
+                    { val: 1, text: 'Below' },
+                    { val: 2, text: 'Inline' },
+                    { val: 3, text: 'Above' }
+                ];
+
+                const planOptions = options.map(o => `<option value="${o.val}" ${d.plan == o.val ? 'selected' : ''}>${o.text}</option>`).join('');
+                const actualOptions = options.map(o => `<option value="${o.val}" ${d.actual == o.val ? 'selected' : ''}>${o.text}</option>`).join('');
+
+                inputHtml = `
+                    <div class="input-cell-wrapper">
+                        <select class="input-plan" data-id="${kpi.id}" data-year="${year}" data-field="plan" style="font-size: 0.8rem; padding: 2px;">
+                            <option value="">Plan</option>
+                            ${planOptions}
+                        </select>
+                        <select class="input-actual" data-id="${kpi.id}" data-year="${year}" data-field="actual" style="font-size: 0.8rem; padding: 2px;">
+                            <option value="">Act</option>
+                            ${actualOptions}
+                        </select>
+                    </div>
+                `;
+            } else {
+                inputHtml = `
                     <div class="input-cell-wrapper">
                         <input type="number" step="0.01" class="input-plan" value="${d.plan}" data-id="${kpi.id}" data-year="${year}" data-field="plan" placeholder="Plan">
                         <input type="number" step="0.01" class="input-actual" value="${d.actual !== null ? d.actual : ''}" data-id="${kpi.id}" data-year="${year}" data-field="actual" placeholder="Act">
                     </div>
+                `;
+            }
+
+            cells += `
+                <td style="${bgStyle}">
+                    ${inputHtml}
                 </td>
             `;
         });

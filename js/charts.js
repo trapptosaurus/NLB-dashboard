@@ -44,6 +44,83 @@ export function generateChartData(kpi, currentYear) {
 
 export function createChart(canvasId, kpi, currentYear) {
     const ctx = document.getElementById(canvasId).getContext('2d');
+
+    if (kpi.displayType === 'qualitative') {
+        const actual = kpi.data[currentYear] ? kpi.data[currentYear].actual : null;
+
+        // Map value to segment index: 1->0 (Red), 2->1 (Yellow), 3->2 (Green)
+        // If actual is null, show all gray
+
+        let bgColors = ['#e2e8f0', '#e2e8f0', '#e2e8f0'];
+        let labelText = 'No Data';
+
+        if (actual !== null) {
+            if (actual <= 1.5) { // Below
+                bgColors = ['#ef4444', '#e2e8f0', '#e2e8f0'];
+                labelText = 'Below Peers';
+            } else if (actual <= 2.5) { // Inline
+                bgColors = ['#e2e8f0', '#f59e0b', '#e2e8f0'];
+                labelText = 'Inline';
+            } else { // Above
+                bgColors = ['#e2e8f0', '#e2e8f0', '#10b981'];
+                labelText = 'Above Peers';
+            }
+        }
+
+        return new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Below', 'Inline', 'Above'],
+                datasets: [{
+                    data: [1, 1, 1],
+                    backgroundColor: bgColors,
+                    borderWidth: 2,
+                    borderColor: '#fff',
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                rotation: -90,
+                circumference: 180,
+                cutout: '75%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false },
+                    title: {
+                        display: true,
+                        text: labelText,
+                        position: 'bottom',
+                        font: { size: 14, weight: 'bold', family: 'Inter' },
+                        padding: { top: -10 } // Move up closer to the gauge
+                    }
+                }
+            },
+            plugins: [{
+                id: 'gaugeText',
+                beforeDraw: function (chart) {
+                    const width = chart.width,
+                        height = chart.height,
+                        ctx = chart.ctx;
+
+                    ctx.restore();
+                    const fontSize = (height / 114).toFixed(2);
+                    ctx.font = "bold " + fontSize + "em Inter";
+                    ctx.textBaseline = "middle";
+                    ctx.fillStyle = "#64748b";
+
+                    const text = actual === 3 ? "Top" : (actual === 2 ? "Mid" : "Low");
+                    const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                    const textY = height / 1.5;
+
+                    ctx.fillText(text, textX, textY);
+                    ctx.save();
+                }
+            }]
+        });
+    }
+
     const chartData = generateChartData(kpi, currentYear);
 
     return new Chart(ctx, {

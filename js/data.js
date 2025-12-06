@@ -175,6 +175,39 @@ export const kpiData = {
                 2029: { plan: 48, actual: null },
                 2030: { plan: 50, actual: null }
             }
+        },
+        {
+            id: 'normalized_roe',
+            name: 'Normalized RoE',
+            unit: '%',
+            description: 'Return on equity adjusted for one-off and extraordinary effects',
+            targetInfo: 'Sustained high returns',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 29, actual: 29 },
+                2026: { plan: 27, actual: 27 },
+                2027: { plan: 25, actual: 25 },
+                2028: { plan: 23, actual: null },
+                2029: { plan: 21, actual: null },
+                2030: { plan: 20, actual: null }
+            }
+        },
+        {
+            id: 'rtsr_peer',
+            name: 'RTSR vs peer group',
+            unit: '',
+            description: 'Relative total shareholder return versus European peer banks',
+            targetInfo: 'Consistently outperforming peers',
+            type: 'higher_better',
+            displayType: 'qualitative', // Special visualization
+            data: {
+                2025: { plan: 3, actual: 3 }, // 3 = Above, 2 = Inline, 1 = Below
+                2026: { plan: 3, actual: 3 },
+                2027: { plan: 3, actual: 3 },
+                2028: { plan: 3, actual: null },
+                2029: { plan: 3, actual: null },
+                2030: { plan: 3, actual: null }
+            }
         }
     ],
     retail: [
@@ -208,6 +241,118 @@ export const kpiData = {
                 2028: { plan: 370, actual: null },
                 2029: { plan: 385, actual: null },
                 2030: { plan: 400, actual: null }
+            }
+        },
+        {
+            id: 'digital_penetration',
+            name: 'Digital penetration (active clients)',
+            unit: '%',
+            description: 'Share of active retail customers using digital channels',
+            targetInfo: 'Digital-first engagement model',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 50, actual: 50 },
+                2026: { plan: 58, actual: 58 },
+                2027: { plan: 65, actual: 65 },
+                2028: { plan: 70, actual: null },
+                2029: { plan: 75, actual: null },
+                2030: { plan: 80, actual: null }
+            }
+        },
+        {
+            id: 'digital_core_sales',
+            name: 'Digital core product sales penetration',
+            unit: '%',
+            description: 'Share of core retail products sold fully digitally',
+            targetInfo: 'End-to-end digital sales processes',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 5, actual: 5 },
+                2026: { plan: 15, actual: 15 },
+                2027: { plan: 25, actual: 25 },
+                2028: { plan: 35, actual: null },
+                2029: { plan: 42, actual: null },
+                2030: { plan: 50, actual: null }
+            }
+        },
+        {
+            id: 'mobile_app_rating',
+            name: 'Mobile app rating',
+            unit: '⭐',
+            description: 'Average customer rating of the mobile banking application',
+            targetInfo: 'Best-in-class user experience',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 4.4, actual: 4.4 },
+                2026: { plan: 4.45, actual: 4.45 },
+                2027: { plan: 4.5, actual: 4.5 },
+                2028: { plan: 4.5, actual: null },
+                2029: { plan: 4.5, actual: null },
+                2030: { plan: 4.5, actual: null }
+            }
+        },
+        {
+            id: 'nps_retail',
+            name: 'Customer NPS (Retail)',
+            unit: 'pts',
+            description: 'Net Promoter Score measuring retail customer advocacy',
+            targetInfo: 'High customer loyalty',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 30, actual: 30 },
+                2026: { plan: 35, actual: 35 },
+                2027: { plan: 40, actual: 40 },
+                2028: { plan: 44, actual: null },
+                2029: { plan: 47, actual: null },
+                2030: { plan: 50, actual: null }
+            }
+        },
+        {
+            id: 'digital_acquisition',
+            name: 'Digital acquisition share',
+            unit: '%',
+            description: 'Share of new retail customers acquired fully digitally',
+            targetInfo: 'Seamless digital onboarding',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 1, actual: 1 },
+                2026: { plan: 8, actual: 8 },
+                2027: { plan: 15, actual: 15 },
+                2028: { plan: 20, actual: null },
+                2029: { plan: 25, actual: null },
+                2030: { plan: 30, actual: null }
+            }
+        },
+        {
+            id: 'stp_consumer',
+            name: 'STP consumer finance',
+            unit: '%',
+            description: 'Straight-through-processing ratio in consumer finance',
+            targetInfo: 'Automated lending decisions',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 47, actual: 47 },
+                2026: { plan: 60, actual: 60 },
+                2027: { plan: 70, actual: 70 },
+                2028: { plan: 80, actual: null },
+                2029: { plan: 85, actual: null },
+                2030: { plan: 90, actual: null }
+            }
+        },
+        {
+            id: 'net_customer_growth',
+            name: 'Net customer base growth',
+            unit: '%',
+            description: 'Annual net growth rate of total retail customer base',
+            targetInfo: 'Expanding market presence',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 0.5, actual: 0.5 },
+                2026: { plan: 0.8, actual: 0.8 },
+                2027: { plan: 1.0, actual: 1.0 },
+                2028: { plan: 1.2, actual: null },
+                2029: { plan: 1.4, actual: null },
+                2030: { plan: 1.5, actual: null }
             }
         }
     ],
@@ -243,6 +388,118 @@ export const kpiData = {
                 2029: { plan: 1.15, actual: null },
                 2030: { plan: 1.3, actual: null }
             }
+        },
+        {
+            id: 'cib_loan_stock',
+            name: 'Total CIB loan stock',
+            unit: 'bn EUR',
+            description: 'Total outstanding corporate and investment banking loan portfolio',
+            targetInfo: 'Doubling the loan book',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 6, actual: 6 },
+                2026: { plan: 7.5, actual: 7.5 },
+                2027: { plan: 9, actual: 9 },
+                2028: { plan: 10, actual: null },
+                2029: { plan: 11, actual: null },
+                2030: { plan: 12, actual: null }
+            }
+        },
+        {
+            id: 'fee_income_share',
+            name: 'Fee income share',
+            unit: '%',
+            description: 'Share of fee-based income in total CIB revenues',
+            targetInfo: 'Diversifying revenue streams',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 27, actual: 27 },
+                2026: { plan: 29, actual: 29 },
+                2027: { plan: 31, actual: 31 },
+                2028: { plan: 33, actual: null },
+                2029: { plan: 35, actual: null },
+                2030: { plan: 37, actual: null }
+            }
+        },
+        {
+            id: 'cross_sell_ratio',
+            name: 'Cross-sell ratio',
+            unit: 'x',
+            description: 'Average number of products per active CIB client',
+            targetInfo: 'Deepening client relationships',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 3.2, actual: 3.2 },
+                2026: { plan: 3.4, actual: 3.4 },
+                2027: { plan: 3.6, actual: 3.6 },
+                2028: { plan: 3.8, actual: null },
+                2029: { plan: 3.9, actual: null },
+                2030: { plan: 4.0, actual: null }
+            }
+        },
+        {
+            id: 'sme_onboarding',
+            name: 'SME onboarding time',
+            unit: 'days',
+            description: 'Average time to onboard a standard SME client',
+            targetInfo: 'Fast and efficient onboarding',
+            type: 'lower_better',
+            data: {
+                2025: { plan: 6, actual: 6 },
+                2026: { plan: 5, actual: 5 },
+                2027: { plan: 4, actual: 4 },
+                2028: { plan: 3, actual: null },
+                2029: { plan: 2.5, actual: null },
+                2030: { plan: 2, actual: null }
+            }
+        },
+        {
+            id: 'nps_cib',
+            name: 'Customer NPS (CIB)',
+            unit: 'pts',
+            description: 'Net Promoter Score for corporate and SME clients',
+            targetInfo: 'Client-centric service model',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 33, actual: 33 },
+                2026: { plan: 37, actual: 37 },
+                2027: { plan: 41, actual: 41 },
+                2028: { plan: 45, actual: null },
+                2029: { plan: 48, actual: null },
+                2030: { plan: 50, actual: null }
+            }
+        },
+        {
+            id: 'segment_cir',
+            name: 'Segment cost-income ratio',
+            unit: '%',
+            description: 'Cost efficiency ratio specific to the CIB segment',
+            targetInfo: 'Operational excellence',
+            type: 'lower_better',
+            data: {
+                2025: { plan: 50, actual: 50 },
+                2026: { plan: 49, actual: 49 },
+                2027: { plan: 48, actual: 48 },
+                2028: { plan: 47, actual: null },
+                2029: { plan: 46, actual: null },
+                2030: { plan: 45, actual: null }
+            }
+        },
+        {
+            id: 'transition_finance',
+            name: 'Transition finance annual volume',
+            unit: 'bn EUR',
+            description: 'Annual new volume of transition finance originated',
+            targetInfo: 'Supporting clients in green transition',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 1.0, actual: 1.0 },
+                2026: { plan: 1.5, actual: 1.5 },
+                2027: { plan: 2.0, actual: 2.0 },
+                2028: { plan: 2.5, actual: null },
+                2029: { plan: 2.9, actual: null },
+                2030: { plan: 3.2, actual: null }
+            }
         }
     ],
     payments: [
@@ -276,6 +533,102 @@ export const kpiData = {
                 2028: { plan: 16, actual: null },
                 2029: { plan: 13, actual: null },
                 2030: { plan: 10, actual: null }
+            }
+        },
+        {
+            id: 'incremental_revenue',
+            name: 'Incremental payments revenue',
+            unit: 'm EUR',
+            description: 'Additional revenue from payments innovations vs 2023',
+            targetInfo: 'New revenue streams from innovation',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 10, actual: 10 },
+                2026: { plan: 30, actual: 30 },
+                2027: { plan: 50, actual: 50 },
+                2028: { plan: 70, actual: null },
+                2029: { plan: 85, actual: null },
+                2030: { plan: 100, actual: null }
+            }
+        },
+        {
+            id: 'mobile_active_customers',
+            name: 'Mobile active customers',
+            unit: '%',
+            description: 'Share of payments customers using mobile wallet',
+            targetInfo: 'Mobile-first payments',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 40, actual: 40 },
+                2026: { plan: 50, actual: 50 },
+                2027: { plan: 60, actual: 60 },
+                2028: { plan: 70, actual: null },
+                2029: { plan: 75, actual: null },
+                2030: { plan: 80, actual: null }
+            }
+        },
+        {
+            id: 'mobile_wallet_rating',
+            name: 'Mobile wallet rating',
+            unit: '⭐',
+            description: 'Customer rating of NLB Pay mobile wallet',
+            targetInfo: 'Top-rated payment experience',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 4.5, actual: 4.5 },
+                2026: { plan: 4.5, actual: 4.5 },
+                2027: { plan: 4.5, actual: 4.5 },
+                2028: { plan: 4.5, actual: null },
+                2029: { plan: 4.5, actual: null },
+                2030: { plan: 4.5, actual: null }
+            }
+        },
+        {
+            id: 'mobile_wallet_penetration',
+            name: 'Mobile wallet penetration',
+            unit: '%',
+            description: 'Share of retail customers actively using mobile wallet',
+            targetInfo: 'Broad adoption of digital wallets',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 15, actual: 15 },
+                2026: { plan: 20, actual: 20 },
+                2027: { plan: 25, actual: 25 },
+                2028: { plan: 30, actual: null },
+                2029: { plan: 35, actual: null },
+                2030: { plan: 40, actual: null }
+            }
+        },
+        {
+            id: 'digitized_transactions',
+            name: 'Digitized card transactions',
+            unit: '%',
+            description: 'Share of total card transactions processed digitally',
+            targetInfo: 'Shift to digital transaction processing',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 5, actual: 5 },
+                2026: { plan: 10, actual: 10 },
+                2027: { plan: 15, actual: 15 },
+                2028: { plan: 20, actual: null },
+                2029: { plan: 22, actual: null },
+                2030: { plan: 25, actual: null }
+            }
+        },
+        {
+            id: 'payments_partners',
+            name: 'Payments partners',
+            unit: '#',
+            description: 'Number of strategic ecosystem partners in payments',
+            targetInfo: 'Open ecosystem approach',
+            type: 'higher_better',
+            data: {
+                2025: { plan: 6, actual: 6 },
+                2026: { plan: 9, actual: 9 },
+                2027: { plan: 12, actual: 12 },
+                2028: { plan: 15, actual: null },
+                2029: { plan: 18, actual: null },
+                2030: { plan: 20, actual: null }
             }
         }
     ]
