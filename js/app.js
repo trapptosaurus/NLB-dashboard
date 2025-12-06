@@ -248,25 +248,44 @@ function renderEditor() {
         // Ideally we'd have a dedicated toolbar in the editor.
     }
 
-    editorTableBody.innerHTML = '';
     const kpis = kpiData[state.currentView === 'overall' ? 'group' : state.currentView]; // Default to group if overall
 
     // Header for Editor
     const thead = document.querySelector('.editor-table thead tr');
     thead.innerHTML = `
-        <th>KPI Name</th>
+        <th style="width: 30px"></th> <!-- Drag Handle -->
+        <th>KPI Details</th>
+        <th>Category</th>
         <th>Status (${state.currentYear})</th>
         ${[2025, 2026, 2027, 2028, 2029, 2030].map(y => `<th>${y}<br><span style="font-size:0.8em; font-weight:normal">Plan | Act</span></th>`).join('')}
+        <th style="width: 30px"></th> <!-- Delete -->
     `;
 
-    kpis.forEach(kpi => {
+    kpis.forEach((kpi, index) => {
         const row = document.createElement('tr');
+        row.draggable = true;
+        row.dataset.index = index;
+        row.dataset.id = kpi.id;
+
         const status = getStatus(kpi);
 
+        // Category Options
+        const categories = ['group', 'retail', 'cib', 'payments'];
+        const categoryOptions = categories.map(c =>
+            `<option value="${c}" ${state.currentView === c || (state.currentView === 'overall' && c === 'group') ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1)}</option>`
+        ).join('');
+
         let cells = `
+            <td class="drag-handle" style="cursor: move; color: #cbd5e1;">☰</td>
+            <td style="min-width: 200px;">
+                <input type="text" class="input-text kpi-name-input" value="${kpi.name}" data-id="${kpi.id}" data-field="name" placeholder="KPI Name" style="font-weight: 500; margin-bottom: 4px;">
+                <textarea class="input-text kpi-desc-input" data-id="${kpi.id}" data-field="description" placeholder="Description" rows="2" style="font-size: 0.75rem; color: #64748b; resize: vertical;">${kpi.description}</textarea>
+                <input type="text" class="input-text kpi-unit-input" value="${kpi.unit}" data-id="${kpi.id}" data-field="unit" placeholder="Unit" style="width: 60px; font-size: 0.75rem; margin-top: 4px;">
+            </td>
             <td>
-                <div class="kpi-name-cell">${kpi.name}</div>
-                <div class="kpi-desc-cell">${kpi.unit}</div>
+                <select class="category-select" data-id="${kpi.id}">
+                    ${categoryOptions}
+                </select>
             </td>
             <td><span class="kpi-status ${getStatusClass(status)}">${getStatusLabel(status)}</span></td>
         `;
@@ -283,31 +302,185 @@ function renderEditor() {
             `;
         });
 
+        cells += `<td><button class="delete-btn" data-id="${kpi.id}" style="color: #ef4444; background: none; border: none; cursor: pointer;">✕</button></td>`;
+
         row.innerHTML = cells;
         editorTableBody.appendChild(row);
     });
 
-    // Add event listeners
-    const inputs = editorTableBody.querySelectorAll('input');
-    inputs.forEach(input => {
+    // Add "Add KPI" Button if not exists
+    if (!document.getElementById('add-kpi-btn')) {
+        const btn = document.createElement('button');
+        btn.id = 'add-kpi-btn';
+        btn.className = 'nav-btn';
+        btn.style.marginTop = '1rem';
+        btn.style.background = '#eef2ff';
+        btn.style.color = '#230078';
+        btn.innerHTML = '+ Add New KPI';
+        btn.onclick = addNewKPI;
+        editorTableBody.parentElement.after(btn);
+    }
+
+    attachEditorListeners();
+}
+
+function addNewKPI() {
+    const newId = 'new_' + Date.now();
+    const newKPI = {
+        id: newId,
+        name: 'New KPI',
+        unit: 'Unit',
+        description: 'Description',
+        targetInfo: 'Target Info',
+        type: 'higher_better',
+        data: {
+            2025: { plan: 0, actual: 0 },
+            2026: { plan: 0, actual: 0 },
+            2027: { plan: 0, actual: 0 },
+            2028: { plan: 0, actual: null },
+            2029: { plan: 0, actual: null },
+            2030: { plan: 0, actual: null }
+        }
+    };
+
+    // Add to current view's list
+    const view = state.currentView === 'overall' ? 'group' : state.currentView;
+    kpiData[view].push(newKPI);
+    renderEditor();
+}
+
+function attachEditorListeners() {
+    // Inputs (Plan/Actual)
+    editorTableBody.querySelectorAll('.input-plan, .input-actual').forEach(input => {
         input.addEventListener('change', (e) => {
             const id = e.target.dataset.id;
             const year = parseInt(e.target.dataset.year);
             const field = e.target.dataset.field;
             let val = e.target.value === '' ? null : parseFloat(e.target.value);
 
-            const kpi = kpis.find(k => k.id === id);
+            // Find KPI across all categories
+            let kpi;
+            for (const cat in kpiData) {
+                kpi = kpiData[cat].find(k => k.id === id);
+                if (kpi) break;
+            }
+
             if (kpi) {
                 if (!kpi.data[year]) kpi.data[year] = {};
                 kpi.data[year][field] = val;
 
-                // Update status cell immediately
-                const statusCell = e.target.closest('tr').children[1];
+                // Update status
+                const row = e.target.closest('tr');
+                const statusCell = row.children[3]; // Index 3 is Status
                 const newStatus = getStatus(kpi);
                 statusCell.innerHTML = `<span class="kpi-status ${getStatusClass(newStatus)}">${getStatusLabel(newStatus)}</span>`;
             }
         });
     });
+
+    // Metadata Inputs (Name, Desc, Unit)
+    editorTableBody.querySelectorAll('.kpi-name-input, .kpi-desc-input, .kpi-unit-input').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const id = e.target.dataset.id;
+            const field = e.target.dataset.field;
+            const val = e.target.value;
+
+            let kpi;
+            for (const cat in kpiData) {
+                kpi = kpiData[cat].find(k => k.id === id);
+                if (kpi) break;
+            }
+            if (kpi) kpi[field] = val;
+        });
+    });
+
+    // Category Select
+    editorTableBody.querySelectorAll('.category-select').forEach(select => {
+        select.addEventListener('change', (e) => {
+            const id = e.target.dataset.id;
+            const newCategory = e.target.value;
+            const currentCategory = state.currentView === 'overall' ? 'group' : state.currentView;
+
+            if (newCategory !== currentCategory) {
+                // Remove from old
+                const oldIndex = kpiData[currentCategory].findIndex(k => k.id === id);
+                if (oldIndex > -1) {
+                    const [kpi] = kpiData[currentCategory].splice(oldIndex, 1);
+                    // Add to new
+                    kpiData[newCategory].push(kpi);
+                    renderEditor(); // Re-render to remove row
+                }
+            }
+        });
+    });
+
+    // Delete Button
+    editorTableBody.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (confirm('Delete this KPI?')) {
+                const id = e.target.dataset.id;
+                const view = state.currentView === 'overall' ? 'group' : state.currentView;
+                const idx = kpiData[view].findIndex(k => k.id === id);
+                if (idx > -1) {
+                    kpiData[view].splice(idx, 1);
+                    renderEditor();
+                }
+            }
+        });
+    });
+
+    // Drag and Drop
+    let draggedRow = null;
+    const rows = editorTableBody.querySelectorAll('tr');
+
+    rows.forEach(row => {
+        row.addEventListener('dragstart', (e) => {
+            draggedRow = row;
+            e.dataTransfer.effectAllowed = 'move';
+            row.classList.add('dragging');
+        });
+
+        row.addEventListener('dragend', () => {
+            draggedRow = null;
+            rows.forEach(r => r.classList.remove('dragging'));
+        });
+
+        row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(editorTableBody, e.clientY);
+            if (afterElement == null) {
+                editorTableBody.appendChild(draggedRow);
+            } else {
+                editorTableBody.insertBefore(draggedRow, afterElement);
+            }
+        });
+
+        row.addEventListener('drop', (e) => {
+            // Reorder data array based on new DOM order
+            const view = state.currentView === 'overall' ? 'group' : state.currentView;
+            const newOrder = [];
+            editorTableBody.querySelectorAll('tr').forEach(r => {
+                const id = r.dataset.id;
+                const kpi = kpiData[view].find(k => k.id === id);
+                if (kpi) newOrder.push(kpi);
+            });
+            kpiData[view] = newOrder;
+        });
+    });
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('tr:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
 // Switch View
