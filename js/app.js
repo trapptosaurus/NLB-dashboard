@@ -162,7 +162,11 @@ function renderDashboard() {
     // Re-attach event listeners for the injected controls
     document.getElementById('year-select').addEventListener('change', (e) => {
         state.currentYear = parseInt(e.target.value);
-        renderDashboard(); // Re-render to update values and statuses
+        if (state.isEditorMode) {
+            renderEditor();
+        } else {
+            renderDashboard();
+        }
     });
     document.getElementById('sort-status').addEventListener('change', (e) => {
         state.sortByStatus = e.target.checked;
@@ -257,7 +261,11 @@ function renderEditor() {
         <th>KPI Details</th>
         <th>Category</th>
         <th>Status (${state.currentYear})</th>
-        ${[2025, 2026, 2027, 2028, 2029, 2030].map(y => `<th>${y}<br><span style="font-size:0.8em; font-weight:normal">Plan | Act</span></th>`).join('')}
+        ${[2025, 2026, 2027, 2028, 2029, 2030].map(y => {
+        const isCurrent = y === state.currentYear;
+        const bgStyle = isCurrent ? 'background-color: #eff6ff; color: #1e3a8a;' : '';
+        return `<th style="${bgStyle}">${y}<br><span style="font-size:0.8em; font-weight:normal">Plan | Act</span></th>`;
+    }).join('')}
         <th style="width: 30px"></th> <!-- Delete -->
     `;
 
@@ -292,8 +300,11 @@ function renderEditor() {
 
         [2025, 2026, 2027, 2028, 2029, 2030].forEach(year => {
             const d = kpi.data[year] || { plan: 0, actual: 0 };
+            const isCurrent = year === state.currentYear;
+            const bgStyle = isCurrent ? 'background-color: #eff6ff;' : ''; // Light blue highlight
+
             cells += `
-                <td>
+                <td style="${bgStyle}">
                     <div class="input-cell-wrapper">
                         <input type="number" step="0.01" class="input-plan" value="${d.plan}" data-id="${kpi.id}" data-year="${year}" data-field="plan" placeholder="Plan">
                         <input type="number" step="0.01" class="input-actual" value="${d.actual !== null ? d.actual : ''}" data-id="${kpi.id}" data-year="${year}" data-field="actual" placeholder="Act">
