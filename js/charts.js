@@ -81,10 +81,11 @@ export function createChart(canvasId, kpi, currentYear) {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
                 rotation: -90,
                 circumference: 180,
-                cutout: '75%',
+                cutout: '80%',
                 plugins: {
                     legend: { display: false },
                     tooltip: { enabled: false },
