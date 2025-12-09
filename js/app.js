@@ -320,7 +320,15 @@ function renderEditor() {
         });
     }
 
-    const kpis = kpiData[state.currentView === 'overall' ? 'group' : state.currentView]; // Default to group if overall
+    let kpis = [];
+    if (state.currentView === 'overall') {
+        // Aggregate all KPIs
+        ['group', 'retail', 'cib', 'payments'].forEach(cat => {
+            kpis = kpis.concat(kpiData[cat]);
+        });
+    } else {
+        kpis = kpiData[state.currentView];
+    }
 
     // Header for Editor
     const thead = document.querySelector('.editor-table thead tr');
@@ -347,14 +355,27 @@ function renderEditor() {
 
         const status = getStatus(kpi);
 
+        // Find KPI's actual category
+        let actualCategory = state.currentView;
+        if (state.currentView === 'overall') {
+            for (const cat in kpiData) {
+                if (kpiData[cat].find(k => k.id === kpi.id)) {
+                    actualCategory = cat;
+                    break;
+                }
+            }
+        }
+
         // Category Options
         const categories = ['group', 'retail', 'cib', 'payments'];
         const categoryOptions = categories.map(c =>
-            `<option value="${c}" ${state.currentView === c || (state.currentView === 'overall' && c === 'group') ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1)}</option>`
+            `<option value="${c}" ${c === actualCategory ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1)}</option>`
         ).join('');
 
+        const isOverall = state.currentView === 'overall';
+
         let cells = `
-            <td class="drag-handle" style="cursor: move; color: #cbd5e1;">☰</td>
+            <td class="drag-handle" style="cursor: ${isOverall ? 'default' : 'move'}; color: #cbd5e1;">${isOverall ? '' : '☰'}</td>
             <td style="min-width: 200px;">
                 <input type="text" class="input-text kpi-name-input" value="${kpi.name}" data-id="${kpi.id}" data-field="name" placeholder="KPI Name" style="font-weight: 500; margin-bottom: 4px;">
                 <textarea class="input-text kpi-desc-input" data-id="${kpi.id}" data-field="description" placeholder="Description" rows="2" style="font-size: 0.75rem; color: #64748b; resize: vertical;">${kpi.description}</textarea>
@@ -529,10 +550,21 @@ function attachEditorListeners() {
         btn.addEventListener('click', (e) => {
             if (confirm('Delete this KPI?')) {
                 const id = e.target.dataset.id;
-                const view = state.currentView === 'overall' ? 'group' : state.currentView;
-                const idx = kpiData[view].findIndex(k => k.id === id);
+
+                // Find which category this KPI belongs to
+                let targetCat = state.currentView;
+                if (state.currentView === 'overall') {
+                    for (const cat in kpiData) {
+                        if (kpiData[cat].find(k => k.id === id)) {
+                            targetCat = cat;
+                            break;
+                        }
+                    }
+                }
+
+                const idx = kpiData[targetCat].findIndex(k => k.id === id);
                 if (idx > -1) {
-                    kpiData[view].splice(idx, 1);
+                    kpiData[targetCat].splice(idx, 1);
                     renderEditor();
                 }
             }
@@ -566,8 +598,10 @@ function attachEditorListeners() {
         });
 
         row.addEventListener('drop', (e) => {
+            if (state.currentView === 'overall') return; // No reordering in overall view
+
             // Reorder data array based on new DOM order
-            const view = state.currentView === 'overall' ? 'group' : state.currentView;
+            const view = state.currentView;
             const newOrder = [];
             editorTableBody.querySelectorAll('tr').forEach(r => {
                 const id = r.dataset.id;
