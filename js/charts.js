@@ -140,7 +140,8 @@ export function createChart(canvasId, kpi, currentYear) {
                             size: 10,
                             family: 'Inter'
                         }
-                    }
+                    },
+                    onClick: (e) => e.stopPropagation() // Disable clicking on legend
                 },
                 tooltip: {
                     callbacks: {
