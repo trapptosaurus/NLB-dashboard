@@ -850,6 +850,43 @@ function toggleEditor() {
     renderEditor();
 }
 
+// Authentication Logic
+function checkAuth() {
+    const isAuthenticated = sessionStorage.getItem('nlb_auth');
+    const loginScreen = document.getElementById('login-screen');
+    const appContainer = document.querySelector('.app-container');
+
+    if (isAuthenticated === 'true') {
+        if (loginScreen) loginScreen.style.display = 'none';
+        if (appContainer) appContainer.style.display = 'flex';
+    } else {
+        if (loginScreen) loginScreen.style.display = 'flex';
+        // appContainer is hidden by style="display:none" in HTML
+    }
+}
+
+function handleLogin() {
+    const passwordInput = document.getElementById('login-password');
+    const errorMsg = document.getElementById('login-error');
+    const password = passwordInput.value;
+
+    if (password === 'nlb2030') {
+        sessionStorage.setItem('nlb_auth', 'true');
+        document.getElementById('login-screen').style.display = 'none';
+        document.querySelector('.app-container').style.display = 'flex';
+        if (errorMsg) errorMsg.style.display = 'none';
+
+        // Force render after showing container
+        renderDashboard();
+    } else {
+        if (errorMsg) {
+            errorMsg.style.display = 'block';
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    }
+}
+
 // Event Listeners
 viewButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -859,5 +896,27 @@ viewButtons.forEach(btn => {
 
 editorButton.addEventListener('click', toggleEditor);
 
-// Initial Render
-switchView('overall');
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuth();
+
+    // Login Event Listeners
+    const loginBtn = document.getElementById('login-btn');
+    const passwordInput = document.getElementById('login-password');
+
+    if (loginBtn) {
+        loginBtn.addEventListener('click', handleLogin);
+    }
+
+    if (passwordInput) {
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+    }
+
+    renderDashboard();
+    // setupNavigation is not needed if we have manual listeners above, strictly speaking, 
+    // but looking at original code, 'setupNavigation' wasn't defined in the snippet I saw.
+    // The snippet ended with `switchView('overall')`.
+    // I will replace `switchView('overall')` with the full init logic.
+});
