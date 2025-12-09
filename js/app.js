@@ -132,6 +132,16 @@ function getOverallStats() {
     return stats;
 }
 
+// Helper: Destroy existing charts to prevent memory leaks/zombies
+function destroyCharts() {
+    Object.values(state.charts).forEach(chart => {
+        if (chart && typeof chart.destroy === 'function') {
+            chart.destroy();
+        }
+    });
+    state.charts = {};
+}
+
 // Helper: Get Advanced Stats for Overall Dashboard
 function getAdvancedStats(groupId) {
     const kpis = kpiData[groupId];
@@ -362,10 +372,12 @@ function renderDashboard() {
     });
 
     if (state.currentView === 'overall') {
+        destroyCharts(); // Cleanup any existing charts
         renderOverallDashboard();
         return;
     }
 
+    destroyCharts(); // Cleanup before rendering new view
     kpiGrid.innerHTML = '';
     kpiGrid.classList.remove('overall-grid');
     kpiGrid.classList.remove('overall-grid-advanced');
