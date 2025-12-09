@@ -400,18 +400,60 @@ body {
     line-height: 1;
 }
 
-.progress-bar-container {
-    height: 8px;
-    background: #f1f5f9;
-    border-radius: 4px;
+.stacked-bar-container {
+    height: 12px;
+    background: #e2e8f0;
+    border-radius: 6px;
     overflow: hidden;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    width: 100%;
 }
 
-.progress-bar {
+.stacked-segment {
     height: 100%;
-    background: #4f46e5;
-    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.segment-green {
+    background-color: #10b981;
+}
+
+.segment-yellow {
+    background-color: #f59e0b;
+}
+
+.segment-red {
+    background-color: #ef4444;
+}
+
+.legend-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: var(--secondary);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.stat-details-mini {
+    font-size: 0.8rem;
+    color: var(--secondary);
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.25rem;
 }
 
 .stat-details {
@@ -474,4 +516,214 @@ body {
 .sort-controls {
     font-size: 0.9rem;
     color: #475569;
+}/* Advanced Dashboard Redesign */
+
+/* Segmented Control */
+.segmented-control-container {
+    display: flex;
+    justify-content: center;
+    /* Centered as requested */
+    margin-bottom: 2rem;
+}
+
+.segmented-control {
+    display: inline-flex;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 999px;
+    /* Pill shape */
+}
+
+.segmented-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--secondary);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.segmented-btn.active {
+    background: #fff;
+    color: var(--text-main);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+}
+
+/* Card Styling */
+.ceo-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    /* shadow-sm */
+    position: relative;
+    height: 100%;
+    /* Uniform height */
+}
+
+.ceo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* shadow-md */
+}
+
+/* Header Row */
+.ceo-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.ceo-card-title {
+    font-size: 1rem;
+    /* 16px */
+    font-weight: 500;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+.ceo-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 8px;
+    /* Spacing if title is long */
+    white-space: nowrap;
+}
+
+.badge-red {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.badge-yellow {
+    background: #fef3c7;
+    color: #f59e0b;
+}
+
+/* Main Stat Block */
+.ceo-stat-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.ceo-big-number {
+    font-size: 2.25rem;
+    /* ~36px */
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.1;
+}
+
+.ceo-stat-label {
+    font-size: 0.75rem;
+    /* 12px */
+    font-weight: 500;
+    color: #64748b;
+    /* muted gray */
+    margin-bottom: 4px;
+}
+
+/* Delta block on single line */
+.ceo-delta-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    /* Subtle gray */
+    margin-top: 4px;
+}
+
+.delta-arrow {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.arrow-up {
+    color: #16a34a;
+}
+
+.arrow-down {
+    color: #ef4444;
+}
+
+/* Stacked Bar */
+.ceo-bar-container {
+    width: 100%;
+    height: 12px;
+    background: transparent;
+    /* No background track requested */
+    border-radius: 999px;
+    display: flex;
+    overflow: hidden;
+    /* Optional: thin border/shadow to stand out */
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.ceo-bar-segment {
+    height: 100%;
+}
+
+.bg-green {
+    background-color: #16a34a;
+}
+
+.bg-yellow {
+    background-color: #f59e0b;
+}
+
+.bg-red {
+    background-color: #ef4444;
+}
+
+/* Status List */
+.ceo-status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* Tight vertical spacing */
+}
+
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    /* 12-13px */
+    color: var(--text-main);
+}
+
+.status-row-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.text-muted-val {
+    color: var(--secondary);
+    font-weight: normal;
+    margin-left: auto;
+    /* Push count to right? Or keep left aligned? Req: "Left-align all labels and numbers in one vertical column" - implies inline flow or strict columns. Let's keep simple left flow: Dot Label Count */
+}
+
+/* Updated Grid */
+.ceo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    padding-bottom: 2rem;
 }

@@ -11,6 +11,11 @@ const state = {
         onTrack: 2, // % deviation allowed for On Track
         warning: 10 // % deviation allowed for Warning (Slightly Off)
     },
+    thresholds: {
+        onTrack: 2, // % deviation allowed for On Track
+        warning: 10 // % deviation allowed for Warning (Slightly Off)
+    },
+    dashboardViewMode: 'percent',
     charts: {} // Store chart instances to update them
 };
 
@@ -25,14 +30,14 @@ const pageTitle = document.getElementById('page-title');
 const currentDateDisplay = document.querySelector('.current-date');
 
 // Helper: Determine status (On Track, Warning, Off Track)
-function getStatus(kpi) {
-    const yearData = kpi.data[state.currentYear];
+function getStatus(kpi, year = state.currentYear) {
+    const yearData = kpi.data[year];
     if (!yearData) return 'unknown';
 
     const actual = yearData.actual;
     const plan = yearData.plan;
 
-    if (actual === null || actual === undefined) return 'unknown';
+    if (actual === null || actual === undefined) return 'off-track';
 
     // Calculate deviation
     // For higher_better: (Actual - Plan) / Plan
@@ -103,12 +108,13 @@ function getStatusIcon(status) {
     if (status === 'on-track') return '✓';
     if (status === 'warning') return '!';
     if (status === 'off-track') return '✕';
+    if (status === 'unknown') return '-'; // No Data
     return '-';
 }
 
 // Helper: Get Overall Stats
 function getOverallStats() {
-    const groups = ['group', 'retail', 'cib', 'payments'];
+    const groups = ['group', 'retail', 'cib', 'payments', 'operational'];
     const stats = {};
 
     groups.forEach(group => {
@@ -126,44 +132,187 @@ function getOverallStats() {
     return stats;
 }
 
-// Render Overall Dashboard
+// Helper: Get Advanced Stats for Overall Dashboard
+function getAdvancedStats(groupId) {
+    const kpis = kpiData[groupId];
+    const total = kpis.length;
+    let onTrack = 0;
+    let warning = 0;
+    let offTrack = 0;
+    const kpiStatuses = []; // To store individual KPI statuses for dots
+
+    kpis.forEach(kpi => {
+        const status = getStatus(kpi);
+        kpiStatuses.push(status);
+        if (status === 'on-track') onTrack++;
+        else if (status === 'warning') warning++;
+        else offTrack++; // 'off-track' or 'unknown' (treated as red)
+    });
+
+    const onTrackPct = (onTrack / total) * 100;
+    const warningPct = (warning / total) * 100;
+    const offTrackPct = (offTrack / total) * 100;
+
+    let tintClass = '';
+    if (onTrackPct >= 80) tintClass = 'tint-green';
+    else if (onTrackPct >= 50) tintClass = 'tint-yellow';
+    else tintClass = 'tint-red';
+
+    return {
+        total,
+        onTrackPct,
+        warningPct,
+        offTrackPct,
+        onTrackCount: onTrack,
+        warningCount: warning,
+        offTrackCount: offTrack,
+        kpiStatuses,
+        tintClass
+    };
+}
+
+// Helper: Calculate Year-over-Year change for a group
+function calculateYoY(groupId) {
+    if (state.currentYear <= 2023) return null; // No previous year data
+
+    const currentYearKpis = kpiData[groupId];
+    const prevYear = state.currentYear - 1;
+
+    let currentOnTrack = 0;
+    let prevOnTrack = 0;
+
+    currentYearKpis.forEach(kpi => {
+        // Temporarily change year to calculate previous year's status
+        const originalYear = state.currentYear;
+        state.currentYear = prevYear;
+        const prevStatus = getStatus(kpi);
+        state.currentYear = originalYear; // Revert year
+
+        if (getStatus(kpi) === 'on-track') currentOnTrack++;
+        if (prevStatus === 'on-track') prevOnTrack++;
+    });
+
+    return currentOnTrack - prevOnTrack;
+}
+
+// Global function for toggle buttons (needs to be global or attached to window)
+window.toggleDashboardView = function (mode) {
+    state.dashboardViewMode = mode;
+    renderDashboard(); // Re-render to apply changes
+};
+
+// Render Overall Dashboard (Advanced)
 function renderOverallDashboard() {
     kpiGrid.innerHTML = '';
-    kpiGrid.classList.add('overall-grid'); // Add class for styling if needed
+    kpiGrid.classList.remove('overall-grid'); // Remove old class
+    kpiGrid.classList.remove('overall-grid-advanced');
+    kpiGrid.classList.add('ceo-grid');
 
-    const stats = getOverallStats();
+    // Insert Toggle if not present (Segmented Control Style)
+    if (!document.getElementById('view-toggle-container')) {
+        const toggleHTML = `
+            <div id="view-toggle-container" class="segmented-control-container">
+                <div class="segmented-control">
+                    <button class="segmented-btn ${state.dashboardViewMode === 'percent' ? 'active' : ''}" onclick="toggleDashboardView('percent')">% View</button>
+                    <button class="segmented-btn ${state.dashboardViewMode === 'count' ? 'active' : ''}" onclick="toggleDashboardView('count')"># View</button>
+                </div>
+            </div>
+        `;
+        kpiGrid.insertAdjacentHTML('beforebegin', toggleHTML);
+    }
+
     const groups = [
         { id: 'group', title: 'Group Strategy' },
         { id: 'retail', title: 'Retail Banking' },
         { id: 'cib', title: 'CIB' },
-        { id: 'payments', title: 'Payments' }
+        { id: 'payments', title: 'Payments' },
+        { id: 'operational', title: 'Operational Model' }
     ];
 
     groups.forEach(g => {
-        const stat = stats[g.id];
+        const stats = getAdvancedStats(g.id);
+        const yoy = calculateYoY(g.id);
+
         const card = document.createElement('div');
-        card.className = 'kpi-card overall-card';
-        card.onclick = () => switchView(g.id); // Click to drill down
+        card.className = `ceo-card`;
+        card.onclick = () => switchView(g.id);
         card.style.cursor = 'pointer';
 
+        // Warning Badge Logic
+        let badgeHTML = '';
+        if (stats.offTrackCount > 0) {
+            badgeHTML = `<span class="ceo-badge badge-red">Off Track: ${stats.offTrackCount}</span>`;
+        } else if (stats.warningCount > 0) {
+            badgeHTML = `<span class="ceo-badge badge-yellow">Warning: ${stats.warningCount}</span>`;
+        }
+
+        // Main Stat Text
+        let mainStatText = '';
+        if (state.dashboardViewMode === 'percent') {
+            mainStatText = `${Math.round(stats.onTrackPct)}%`;
+        } else {
+            mainStatText = `${stats.onTrackCount}`;
+        }
+
+        // YoY HTML (Single line with arrow)
+        let yoyHTML = '';
+        if (yoy !== null) {
+            let iconClass = 'arrow-up';
+            let iconChar = '▲';
+            if (yoy < 0) {
+                iconClass = 'arrow-down';
+                iconChar = '▼';
+            }
+            if (yoy === 0) iconChar = '—';
+
+            yoyHTML = `
+                <div class="ceo-delta-line">
+                     <span class="delta-arrow ${iconClass}">${iconChar}</span>
+                     <span>${yoy > 0 ? '+' : ''}${yoy} vs LY</span>
+                </div>
+            `;
+        }
+
         card.innerHTML = `
-            <div class="kpi-header">
-                <h3>${g.title}</h3>
+            <div class="ceo-card-header">
+                <div class="ceo-card-title">${g.title}</div>
+                ${badgeHTML}
             </div>
-            <div class="overall-stat">
-                <div class="big-number">${stat.percent}%</div>
-                <div class="stat-label">KPIs On Track</div>
+
+            <div class="ceo-stat-block">
+                <div class="ceo-big-number">${mainStatText}</div>
+                <div class="ceo-stat-label">KPIs on track</div>
+                ${yoyHTML}
             </div>
-            <div class="progress-bar-container">
-                <div class="progress-bar" style="width: ${stat.percent}%"></div>
+
+            <div class="ceo-bar-container">
+                 <div class="ceo-bar-segment bg-green" style="width: ${stats.onTrackPct}%"></div>
+                 <div class="ceo-bar-segment bg-yellow" style="width: ${stats.warningPct}%"></div>
+                 <div class="ceo-bar-segment bg-red" style="width: ${stats.offTrackPct}%"></div>
             </div>
-            <div class="stat-details">
-                ${stat.onTrack} of ${stat.total} KPIs on track
+
+            <div class="ceo-status-list">
+                <div class="status-row">
+                    <div class="status-row-dot bg-green"></div>
+                    <span style="font-weight: 500;">On Track</span>
+                    <span class="text-muted-val">${stats.onTrackCount} KPIs</span>
+                </div>
+                <div class="status-row">
+                    <div class="status-row-dot bg-yellow"></div>
+                    <span style="font-weight: 500;">Warning</span>
+                    <span class="text-muted-val">${stats.warningCount} KPIs</span>
+                </div>
+                <div class="status-row">
+                    <div class="status-row-dot bg-red"></div>
+                    <span style="font-weight: 500;">Off Track</span>
+                    <span class="text-muted-val">${stats.offTrackCount} KPIs</span>
+                </div>
             </div>
         `;
         kpiGrid.appendChild(card);
     });
 }
+
 
 // Render Dashboard
 function renderDashboard() {
@@ -171,6 +320,8 @@ function renderDashboard() {
     currentDateDisplay.innerHTML = `
         <label for="year-select">Current Year:</label>
         <select id="year-select">
+            <option value="2023" ${state.currentYear === 2023 ? 'selected' : ''}>2023</option>
+            <option value="2024" ${state.currentYear === 2024 ? 'selected' : ''}>2024</option>
             <option value="2025" ${state.currentYear === 2025 ? 'selected' : ''}>2025</option>
             <option value="2026" ${state.currentYear === 2026 ? 'selected' : ''}>2026</option>
             <option value="2027" ${state.currentYear === 2027 ? 'selected' : ''}>2027</option>
@@ -204,6 +355,7 @@ function renderDashboard() {
 
     kpiGrid.innerHTML = '';
     kpiGrid.classList.remove('overall-grid');
+    kpiGrid.classList.remove('overall-grid-advanced');
     state.charts = {}; // Reset charts
 
     let kpis = [...kpiData[state.currentView]];
@@ -323,7 +475,7 @@ function renderEditor() {
     let kpis = [];
     if (state.currentView === 'overall') {
         // Aggregate all KPIs
-        ['group', 'retail', 'cib', 'payments'].forEach(cat => {
+        ['group', 'retail', 'cib', 'payments', 'operational'].forEach(cat => {
             kpis = kpis.concat(kpiData[cat]);
         });
     } else {
@@ -337,7 +489,7 @@ function renderEditor() {
         <th>KPI Details</th>
         <th>Category</th>
         <th>Status</th>
-        ${[2025, 2026, 2027, 2028, 2029, 2030].map(y => {
+        ${[2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030].map(y => {
         const isCurrent = y === state.currentYear;
         const bgStyle = isCurrent ? 'background-color: #eff6ff; color: #1e3a8a;' : '';
         return `<th style="${bgStyle}">${y}<br><span style="font-size:0.8em; font-weight:normal">Plan | Act</span></th>`;
@@ -367,7 +519,7 @@ function renderEditor() {
         }
 
         // Category Options
-        const categories = ['group', 'retail', 'cib', 'payments'];
+        const categories = ['group', 'retail', 'cib', 'payments', 'operational'];
         const categoryOptions = categories.map(c =>
             `<option value="${c}" ${c === actualCategory ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1)}</option>`
         ).join('');
@@ -389,7 +541,7 @@ function renderEditor() {
             <td><span class="kpi-status ${getStatusClass(status)}">${getStatusLabel(status)}</span></td>
         `;
 
-        [2025, 2026, 2027, 2028, 2029, 2030].forEach(year => {
+        [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030].forEach(year => {
             const d = kpi.data[year] || { plan: 0, actual: 0 };
             const isCurrent = year === state.currentYear;
             const bgStyle = isCurrent ? 'background-color: #eff6ff;' : ''; // Light blue highlight
@@ -465,6 +617,8 @@ function addNewKPI() {
         targetInfo: 'Target Info',
         type: 'higher_better',
         data: {
+            2023: { plan: 0, actual: 0 },
+            2024: { plan: 0, actual: 0 },
             2025: { plan: 0, actual: 0 },
             2026: { plan: 0, actual: 0 },
             2027: { plan: 0, actual: 0 },
@@ -655,7 +809,8 @@ function switchView(viewName) {
         'group': 'Group Strategy KPIs',
         'retail': 'Retail Banking KPIs',
         'cib': 'Corporate & Investment Banking KPIs',
-        'payments': 'Payments KPIs'
+        'payments': 'Payments KPIs',
+        'operational': 'Operational Model KPIs'
     };
     pageTitle.textContent = titleMap[viewName];
 

@@ -1,7 +1,7 @@
 
 // Generate full dataset
 export function generateChartData(kpi, currentYear) {
-    const years = [2025, 2026, 2027, 2028, 2029, 2030];
+    const years = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
 
     const plans = years.map(y => kpi.data[y] ? kpi.data[y].plan : null);
     const actuals = years.map(y => {

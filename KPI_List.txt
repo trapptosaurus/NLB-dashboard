@@ -1,0 +1,45 @@
+Group Financial
+- Recurring revenues
+- Recurring profits
+- CIR
+- RoE
+- Normalized RoE
+- RTSR
+- Payout ratio
+- P/B
+- Tier 1 capital ratio
+- CET1 ratio
+- Cost of Risk
+- NPS
+- Employee engagement (eNPS)
+
+Retail Banking
+- Retail clients (incl. micro)
+- Revenue per active client
+- Net growth of customer base
+- NPS
+- STP for consumer finance
+- Mobile app rating
+- Digital penetration (active)
+- Digital core product sales penetration
+- Digital acquisition
+
+Group CIB
+- Revenue per active client
+- Share of fee income
+- Cross-sell ratio
+- NPS
+- Time to decision on financing
+- Time to onboard new clients
+- Total CIB stock loan volume
+- CIB Green financing stock volume
+- Reaching interim NZBA targets
+
+Group Payments
+- Revenue contribution to the group
+- Digital penetration (Retail clients)
+- Mobile wallet rating (NLB Pay)
+- # of partners in payments
+- Penetration of mobile wallet
+- % of digitized card transactions
+- % of cash transactions in branches (Retail)
