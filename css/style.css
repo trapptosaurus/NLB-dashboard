@@ -11,7 +11,7 @@
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
-    --sidebar-width: 260px;
+    --sidebar-width: 220px;
     --header-height: 70px;
 }
 
@@ -516,7 +516,9 @@ body {
 .sort-controls {
     font-size: 0.9rem;
     color: #475569;
-}/* Advanced Dashboard Redesign */
+}
+
+/* Advanced Dashboard Redesign */
 
 /* Segmented Control */
 .segmented-control-container {

@@ -213,12 +213,25 @@ function renderOverallDashboard() {
         const toggleHTML = `
             <div id="view-toggle-container" class="segmented-control-container">
                 <div class="segmented-control">
-                    <button class="segmented-btn ${state.dashboardViewMode === 'percent' ? 'active' : ''}" onclick="toggleDashboardView('percent')">% View</button>
-                    <button class="segmented-btn ${state.dashboardViewMode === 'count' ? 'active' : ''}" onclick="toggleDashboardView('count')"># View</button>
+                    <button id="toggle-percent" class="segmented-btn" onclick="toggleDashboardView('percent')">% View</button>
+                    <button id="toggle-count" class="segmented-btn" onclick="toggleDashboardView('count')"># View</button>
                 </div>
             </div>
         `;
         kpiGrid.insertAdjacentHTML('beforebegin', toggleHTML);
+    }
+
+    // Update Active State
+    const btnPercent = document.getElementById('toggle-percent');
+    const btnCount = document.getElementById('toggle-count');
+    if (btnPercent && btnCount) {
+        if (state.dashboardViewMode === 'percent') {
+            btnPercent.classList.add('active');
+            btnCount.classList.remove('active');
+        } else {
+            btnPercent.classList.remove('active');
+            btnCount.classList.add('active');
+        }
     }
 
     const groups = [
@@ -356,6 +369,12 @@ function renderDashboard() {
     kpiGrid.innerHTML = '';
     kpiGrid.classList.remove('overall-grid');
     kpiGrid.classList.remove('overall-grid-advanced');
+    kpiGrid.classList.remove('ceo-grid');
+
+    // Remove Toggle if present (it's outside kpiGrid)
+    const toggle = document.getElementById('view-toggle-container');
+    if (toggle) toggle.remove();
+
     state.charts = {}; // Reset charts
 
     let kpis = [...kpiData[state.currentView]];
