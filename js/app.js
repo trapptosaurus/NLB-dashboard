@@ -983,21 +983,30 @@ function toggleEditor() {
 }
 
 // Authentication Logic
+// Authentication Logic
 function checkAuth() {
-    const isAuthenticated = sessionStorage.getItem('nlb_auth');
+    // Disable auto-login to force password screen on load
+    const isAuthenticated = false; // sessionStorage.getItem('nlb_auth');
+
+    // Clear session on load to ensure new login required
+    sessionStorage.removeItem('nlb_auth');
+
     const loginScreen = document.getElementById('login-screen');
     const appContainer = document.querySelector('.app-container');
 
-    console.log('Checking Auth... Status:', isAuthenticated);
+    console.log('Checking Auth... Status: Forced Login');
 
     if (isAuthenticated === 'true') {
-        console.log('User is authenticated. Showing dashboard.');
-        if (loginScreen) loginScreen.style.display = 'none';
-        if (appContainer) appContainer.style.display = 'flex';
-        renderDashboard();
+        // ... (Disabled) ...
     } else {
         console.log('User is NOT authenticated. Showing login.');
         if (loginScreen) loginScreen.style.display = 'flex';
+        // Hide app until manual login (handled by inline script)
+        if (appContainer) appContainer.style.display = 'none';
+
+        // Don't render dashboard yet
+    }
+}
         // appContainer is hidden by style="display:none" in HTML
     }
 }
