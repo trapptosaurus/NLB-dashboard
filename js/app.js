@@ -829,15 +829,21 @@ function getDragAfterElement(container, y) {
     }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
-// GitHub Persistence
+// GitHub Persistence (Open Access)
+// TO SETUP: Paste your GitHub Personal Access Token below.
+// WARNING: This token is visible to anyone who views the source code.
+const GITHUB_TOKEN = ""; // e.g. "ghp_..."
+
 async function saveToGitHub() {
     const REPO_OWNER = 'trapptosaurus';
     const REPO_NAME = 'NLB-dashboard';
     const FILE_PATH = 'js/data.js';
-    const BRANCH = 'main'; // or 'master' depending on repo
+    const BRANCH = 'main';
 
-    const token = getGitHubToken();
-    if (!token) return;
+    if (!GITHUB_TOKEN) {
+        alert("System not configured. Please ask the Admin to set the GITHUB_TOKEN in js/app.js.");
+        return;
+    }
 
     const btn = document.getElementById('save-github-btn');
     const originalText = btn.innerHTML;
@@ -848,16 +854,20 @@ async function saveToGitHub() {
         // 1. Generate File Content
         const fileContent = `const kpiData = ${JSON.stringify(kpiData, null, 4)};\n\n// Last Updated: ${new Date().toISOString()}`;
 
-        // 2. Get Current File SHA (required for update)
+        // 2. Get Current File SHA
         const getUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?ref=${BRANCH}`;
         const getRes = await fetch(getUrl, {
             headers: {
-                'Authorization': `token ${token}`,
+                'Authorization': `token ${GITHUB_TOKEN}`,
                 'Accept': 'application/vnd.github.v3+json'
             }
         });
 
-        if (!getRes.ok) throw new Error('Failed to fetch current file info. Check Token/Permissions.');
+        if (getRes.status === 401 || getRes.status === 403) {
+            throw new Error("Invalid GitHub Token. Please check GITHUB_TOKEN in js/app.js.");
+        }
+        if (!getRes.ok) throw new Error('Failed to fetch file info.');
+
         const getData = await getRes.json();
         const currentSha = getData.sha;
 
@@ -866,13 +876,13 @@ async function saveToGitHub() {
         const putRes = await fetch(putUrl, {
             method: 'PUT',
             headers: {
-                'Authorization': `token ${token}`,
+                'Authorization': `token ${GITHUB_TOKEN}`,
                 'Accept': 'application/vnd.github.v3+json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 message: `Update KPI Data via Dashboard (${new Date().toLocaleDateString()})`,
-                content: btoa(unescape(encodeURIComponent(fileContent))), // Base64 encode handling UTF-8
+                content: btoa(unescape(encodeURIComponent(fileContent))),
                 sha: currentSha,
                 branch: BRANCH
             })
@@ -885,23 +895,10 @@ async function saveToGitHub() {
     } catch (err) {
         console.error(err);
         alert(`❌ Error: ${err.message}`);
-        // If auth failed, clear bad token
-        if (err.message.includes('Token')) localStorage.removeItem('gh_token');
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
     }
-}
-
-function getGitHubToken() {
-    let token = localStorage.getItem('gh_token');
-    if (!token) {
-        token = prompt("Please enter your GitHub Personal Access Token (PAT) with 'repo' permissions:");
-        if (token) {
-            localStorage.setItem('gh_token', token);
-        }
-    }
-    return token;
 }
 
 // Switch View
