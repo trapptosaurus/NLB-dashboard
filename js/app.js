@@ -672,7 +672,7 @@ function renderEditor() {
         btnSave.style.background = '#230078';
         btnSave.style.color = '#ffffff';
         btnSave.style.width = 'auto';
-        btnSave.innerHTML = '💾 Save Changes to GitHub';
+        btnSave.innerHTML = '💾 Save Changes';
         btnSave.onclick = saveToGitHub;
 
         btnFn.appendChild(btnAdd);
