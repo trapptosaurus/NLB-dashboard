@@ -104,7 +104,7 @@
 
     <!-- Inline Login Script (Runs immediately, independent of app.js) -->
     <script>
-        (function() {
+        (function () {
             // Debug Logger
             function log(msg) {
                 console.log('[LoginSystem]', msg);
@@ -122,7 +122,7 @@
             function initLogin() {
                 const loginBtn = document.getElementById('login-btn');
                 const passwordInput = document.getElementById('login-password');
-                
+
                 if (!loginBtn) {
                     log('CRITICAL: Login button not found!');
                     return;
@@ -133,13 +133,13 @@
                 function tryLogin() {
                     const pass = passwordInput.value.trim();
                     log('Checking password: "' + pass + '"');
-                    
+
                     if (pass === 'nlb2030') {
                         log('SUCCESS. Access Granted.');
                         sessionStorage.setItem('nlb_auth', 'true');
                         document.getElementById('login-screen').style.display = 'none';
                         document.querySelector('.app-container').style.display = 'flex';
-                        
+
                         // Try to boot the app if it hasn't already
                         if (window.renderDashboard) {
                             log('Triggering Dashboard Render...');
@@ -155,12 +155,12 @@
                     }
                 }
 
-                loginBtn.onclick = function(e) {
+                loginBtn.onclick = function (e) {
                     e.preventDefault();
                     tryLogin();
                 };
 
-                passwordInput.onkeypress = function(e) {
+                passwordInput.onkeypress = function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         tryLogin();
@@ -176,7 +176,7 @@
         })();
     </script>
 
-    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/app.js?v=2.1.0"></script>
 </body>
 
 </html>
