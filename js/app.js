@@ -1032,7 +1032,7 @@ viewButtons.forEach(btn => {
 if (editorButton) editorButton.addEventListener('click', toggleEditor);
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
     console.log('App Initializing...');
 
     // Login Event Listeners
@@ -1060,4 +1060,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     checkAuth();
-});
+}
+
+// Run immediately (Module is deferred by default, so DOM is likely ready)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
+```
