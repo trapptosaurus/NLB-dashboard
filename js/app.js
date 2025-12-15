@@ -372,7 +372,7 @@ function renderDashboard() {
             <select id="year-select" style="padding: 5px; border-radius: 4px;">
                 <option value="2023" ${state.currentYear === 2023 ? 'selected' : ''}>2023</option>
                 <option value="2024" ${state.currentYear === 2024 ? 'selected' : ''}>2024</option>
-                <option value="2025" ${state.currentYear === 2025 ? 'selected' : ''}>2025 (Start)</option>
+                <option value="2025" ${state.currentYear === 2025 ? 'selected' : ''}>2025</option>
                 <option value="2026" ${state.currentYear === 2026 ? 'selected' : ''}>2026</option>
                 <option value="2027" ${state.currentYear === 2027 ? 'selected' : ''}>2027</option>
                 <option value="2028" ${state.currentYear === 2028 ? 'selected' : ''}>2028</option>
