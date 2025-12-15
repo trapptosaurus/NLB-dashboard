@@ -1,4 +1,4 @@
-const kpiData = {
+export const kpiData = {
     "group": [
         {
             "id": "recurring_revenue",
