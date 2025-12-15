@@ -1,4 +1,4 @@
-import { kpiData } from './data.js?v=3.0.0';
+import { kpiData } from './data.js';
 import { createChart, generateChartData } from './charts.js';
 
 // State
