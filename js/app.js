@@ -624,15 +624,32 @@ function renderEditor() {
 
     // Add "Add KPI" Button if not exists
     if (!document.getElementById('add-kpi-btn')) {
-        const btn = document.createElement('button');
-        btn.id = 'add-kpi-btn';
-        btn.className = 'nav-btn';
-        btn.style.marginTop = '1rem';
-        btn.style.background = '#eef2ff';
-        btn.style.color = '#230078';
-        btn.innerHTML = '+ Add New KPI';
-        btn.onclick = addNewKPI;
-        editorTableBody.parentElement.after(btn);
+        const btnFn = document.createElement('div');
+        btnFn.style.display = 'flex';
+        btnFn.style.gap = '1rem';
+        btnFn.style.marginTop = '1rem';
+
+        const btnAdd = document.createElement('button');
+        btnAdd.id = 'add-kpi-btn';
+        btnAdd.className = 'nav-btn';
+        btnAdd.style.background = '#eef2ff';
+        btnAdd.style.width = 'auto'; // Auto width
+        btnAdd.style.color = '#230078';
+        btnAdd.innerHTML = '+ Add New KPI';
+        btnAdd.onclick = addNewKPI;
+
+        const btnSave = document.createElement('button');
+        btnSave.id = 'save-github-btn';
+        btnSave.className = 'nav-btn';
+        btnSave.style.background = '#230078';
+        btnSave.style.color = '#ffffff';
+        btnSave.style.width = 'auto';
+        btnSave.innerHTML = '💾 Save Changes to GitHub';
+        btnSave.onclick = saveToGitHub;
+
+        btnFn.appendChild(btnAdd);
+        btnFn.appendChild(btnSave);
+        editorTableBody.parentElement.after(btnFn);
     }
 
     attachEditorListeners();
@@ -810,6 +827,81 @@ function getDragAfterElement(container, y) {
             return closest;
         }
     }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+// GitHub Persistence
+async function saveToGitHub() {
+    const REPO_OWNER = 'trapptosaurus';
+    const REPO_NAME = 'NLB-dashboard';
+    const FILE_PATH = 'js/data.js';
+    const BRANCH = 'main'; // or 'master' depending on repo
+
+    const token = getGitHubToken();
+    if (!token) return;
+
+    const btn = document.getElementById('save-github-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Saving...';
+    btn.disabled = true;
+
+    try {
+        // 1. Generate File Content
+        const fileContent = `const kpiData = ${JSON.stringify(kpiData, null, 4)};\n\n// Last Updated: ${new Date().toISOString()}`;
+
+        // 2. Get Current File SHA (required for update)
+        const getUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?ref=${BRANCH}`;
+        const getRes = await fetch(getUrl, {
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (!getRes.ok) throw new Error('Failed to fetch current file info. Check Token/Permissions.');
+        const getData = await getRes.json();
+        const currentSha = getData.sha;
+
+        // 3. Update File
+        const putUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+        const putRes = await fetch(putUrl, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `Update KPI Data via Dashboard (${new Date().toLocaleDateString()})`,
+                content: btoa(unescape(encodeURIComponent(fileContent))), // Base64 encode handling UTF-8
+                sha: currentSha,
+                branch: BRANCH
+            })
+        });
+
+        if (!putRes.ok) throw new Error('Failed to commit changes.');
+
+        alert('✅ Success! Data saved to GitHub.\nChanges will appear after the site rebuilds (1-2 mins).');
+
+    } catch (err) {
+        console.error(err);
+        alert(`❌ Error: ${err.message}`);
+        // If auth failed, clear bad token
+        if (err.message.includes('Token')) localStorage.removeItem('gh_token');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+
+function getGitHubToken() {
+    let token = localStorage.getItem('gh_token');
+    if (!token) {
+        token = prompt("Please enter your GitHub Personal Access Token (PAT) with 'repo' permissions:");
+        if (token) {
+            localStorage.setItem('gh_token', token);
+        }
+    }
+    return token;
 }
 
 // Switch View
