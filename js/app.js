@@ -957,15 +957,79 @@ function checkAuth() {
     const loginScreen = document.getElementById('login-screen');
     const appContainer = document.querySelector('.app-container');
 
+    console.log('Checking Auth... Status:', isAuthenticated);
+
     if (isAuthenticated === 'true') {
+        console.log('User is authenticated. Showing dashboard.');
         if (loginScreen) loginScreen.style.display = 'none';
         if (appContainer) appContainer.style.display = 'flex';
-        renderDashboard(); // Render if already logged in
+        renderDashboard();
     } else {
+        console.log('User is NOT authenticated. Showing login.');
         if (loginScreen) loginScreen.style.display = 'flex';
         // appContainer is hidden by style="display:none" in HTML
     }
 }
+
+function handleLogin() {
+    const passwordInput = document.getElementById('login-password');
+    const errorMsg = document.getElementById('login-error');
+
+    // Safety check
+    if (!passwordInput) {
+        console.error("Critical: Password input missing");
+        alert("System Error: Login input missing. Please refresh.");
+        return;
+    }
+
+    const password = passwordInput.value.trim(); // Trim whitespace
+
+    console.log('Attempting login with:', password);
+
+    if (password === 'nlb2030') {
+        console.log('Password correct!');
+        try {
+            sessionStorage.setItem('nlb_auth', 'true');
+
+            const screen = document.getElementById('login-screen');
+            const app = document.querySelector('.app-container');
+
+            if (screen) screen.style.display = 'none';
+            if (app) app.style.display = 'flex';
+            if (errorMsg) errorMsg.style.display = 'none';
+
+            // Wrap render in try-catch to prevent auth loop crash
+            try {
+                renderDashboard();
+            } catch (renderErr) {
+                console.error("Render Error:", renderErr);
+                alert("Login successful, but Dashboard failed to render. Check Console.");
+            }
+        } catch (e) {
+            console.error("Storage Error:", e);
+            alert("Login System Error: " + e.message);
+        }
+    } else {
+        console.log('Password incorrect');
+        if (errorMsg) {
+            errorMsg.style.display = 'block';
+            errorMsg.textContent = "Incorrect code"; // visual feedback
+            passwordInput.value = '';
+            passwordInput.focus();
+        } else {
+            alert("Incorrect access code");
+        }
+    }
+}
+
+// Event Listeners for Switch View (Global)
+viewButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        switchView(btn.dataset.view);
+    });
+});
+
+if (editorButton) editorButton.addEventListener('click', toggleEditor);
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -979,11 +1043,11 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Login Button found');
         loginBtn.addEventListener('click', (e) => {
             console.log('Login Button Clicked');
-            e.preventDefault(); // Prevent form submission quirks
+            e.preventDefault();
             handleLogin();
         });
     } else {
-        console.error('Login Button NOT found');
+        console.error('Login Button NOT found - Check HTML ID');
     }
 
     if (passwordInput) {
@@ -997,32 +1061,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     checkAuth();
 });
-
-function handleLogin() {
-    const passwordInput = document.getElementById('login-password');
-    const errorMsg = document.getElementById('login-error');
-    const password = passwordInput.value;
-
-    console.log('Attempting login with:', password);
-
-    if (password === 'nlb2030') {
-        console.log('Password correct!');
-        sessionStorage.setItem('nlb_auth', 'true');
-
-        const screen = document.getElementById('login-screen');
-        const app = document.querySelector('.app-container');
-
-        if (screen) screen.style.display = 'none';
-        if (app) app.style.display = 'flex';
-        if (errorMsg) errorMsg.style.display = 'none';
-
-        renderDashboard();
-    } else {
-        console.log('Password incorrect');
-        if (errorMsg) {
-            errorMsg.style.display = 'block';
-            passwordInput.value = '';
-            passwordInput.focus();
-        }
-    }
-}
