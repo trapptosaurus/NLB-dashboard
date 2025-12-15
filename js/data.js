@@ -1,4 +1,4 @@
-export const kpiData = {
+const kpiData = {
     "group": [
         {
             "id": "recurring_revenue",
@@ -2028,4 +2028,4 @@ export const kpiData = {
     ]
 };
 
-// Last Updated: 2025-12-15T11:40:09.182Z
+// Last Updated: 2025-12-15T13:40:47.986Z
