@@ -1007,9 +1007,7 @@ function checkAuth() {
         // Don't render dashboard yet
     }
 }
-        // appContainer is hidden by style="display:none" in HTML
-    }
-}
+
 
 function logToScreen(msg) {
     console.log(msg);
