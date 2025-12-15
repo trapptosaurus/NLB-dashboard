@@ -23,6 +23,9 @@
                 <button id="login-btn">Enter</button>
             </div>
             <div id="login-error" class="login-error">Incorrect access code</div>
+            <div id="debug-log"
+                style="margin-top:20px; font-family:monospace; font-size:10px; color:#666; text-align:left; background:#eee; padding:10px; border-radius:4px; max-height:100px; overflow:auto; display:none;">
+            </div>
         </div>
     </div>
 
@@ -97,6 +100,80 @@
             </div>
         </main>
     </div>
+
+    <!-- Inline Login Script (Runs immediately, independent of app.js) -->
+    <script>
+        (function() {
+            // Debug Logger
+            function log(msg) {
+                console.log('[LoginSystem]', msg);
+                const debugBox = document.getElementById('debug-log');
+                if (debugBox) {
+                    debugBox.style.display = 'block';
+                    debugBox.innerHTML += `<div>${new Date().toLocaleTimeString()} ${msg}</div>`;
+                    debugBox.scrollTop = debugBox.scrollHeight;
+                }
+            }
+            window.logToScreen = log; // Expose to app.js
+
+            log('Login System Starting...');
+
+            function initLogin() {
+                const loginBtn = document.getElementById('login-btn');
+                const passwordInput = document.getElementById('login-password');
+                
+                if (!loginBtn) {
+                    log('CRITICAL: Login button not found!');
+                    return;
+                }
+
+                log('Events attached.');
+
+                function tryLogin() {
+                    const pass = passwordInput.value.trim();
+                    log('Checking password: "' + pass + '"');
+                    
+                    if (pass === 'nlb2030') {
+                        log('SUCCESS. Access Granted.');
+                        sessionStorage.setItem('nlb_auth', 'true');
+                        document.getElementById('login-screen').style.display = 'none';
+                        document.querySelector('.app-container').style.display = 'flex';
+                        
+                        // Try to boot the app if it hasn't already
+                        if (window.renderDashboard) {
+                            log('Triggering Dashboard Render...');
+                            window.renderDashboard();
+                        } else {
+                            log('Dashboard app.js not ready yet. Monitoring...');
+                            // App.js will checkAuth() when it loads
+                        }
+                    } else {
+                        log('FAILED. Incorrect password.');
+                        document.getElementById('login-error').style.display = 'block';
+                        document.getElementById('login-error').textContent = "Incorrect code";
+                    }
+                }
+
+                loginBtn.onclick = function(e) {
+                    e.preventDefault();
+                    tryLogin();
+                };
+
+                passwordInput.onkeypress = function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        tryLogin();
+                    }
+                };
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initLogin);
+            } else {
+                initLogin();
+            }
+        })();
+    </script>
 
     <script type="module" src="js/app.js"></script>
 </body>

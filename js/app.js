@@ -339,40 +339,68 @@ function renderOverallDashboard() {
 
 // Render Dashboard
 function renderDashboard() {
-    // Update Current Year Display
-    currentDateDisplay.innerHTML = `
-        <label for="year-select">Current Year:</label>
-        <select id="year-select">
-            <option value="2023" ${state.currentYear === 2023 ? 'selected' : ''}>2023</option>
-            <option value="2024" ${state.currentYear === 2024 ? 'selected' : ''}>2024</option>
-            <option value="2025" ${state.currentYear === 2025 ? 'selected' : ''}>2025</option>
-            <option value="2026" ${state.currentYear === 2026 ? 'selected' : ''}>2026</option>
-            <option value="2027" ${state.currentYear === 2027 ? 'selected' : ''}>2027</option>
-            <option value="2028" ${state.currentYear === 2028 ? 'selected' : ''}>2028</option>
-            <option value="2029" ${state.currentYear === 2029 ? 'selected' : ''}>2029</option>
-            <option value="2030" ${state.currentYear === 2030 ? 'selected' : ''}>2030</option>
-        </select>
-        <div class="sort-controls" style="margin-left: 20px; display: inline-block;">
-             <label><input type="checkbox" id="sort-status" ${state.sortByStatus ? 'checked' : ''}> Sort by Status</label>
-        </div>
-    `;
+    if (window.logToScreen) window.logToScreen(`Rendering Dashboard: ${state.currentView}`);
 
-    // Re-attach event listeners for the injected controls
-    document.getElementById('year-select').addEventListener('change', (e) => {
-        state.currentYear = parseInt(e.target.value);
-        if (state.isEditorMode) {
-            renderEditor();
-        } else {
-            renderDashboard();
+    // Safety check for kpiGrid
+    const kpiGrid = document.getElementById('kpi-grid');
+    if (!kpiGrid) {
+        if (window.logToScreen) window.logToScreen('CRITICAL: kpi-grid element not found!');
+        return;
+    }
+
+    // Set page title (redundant safety)
+    if (pageTitle) {
+        // ... (title logic handled in switchView)
+    }
+
+    // Update Year Display
+    const yearSelect = document.getElementById('year-select');
+    if (!yearSelect) {
+        // If header not built yet, build it
+        const header = document.querySelector('.top-bar');
+        if (header && !header.querySelector('.dashboard-controls')) {
+            // ... Code to inject controls if missing ...
+            // For now, assume controls exist or we don't block
         }
-    });
-    document.getElementById('sort-status').addEventListener('change', (e) => {
-        state.sortByStatus = e.target.checked;
-        renderDashboard();
-    });
+    }
+
+    // Inject Controls if missing (Idempotent)
+    const topBar = document.querySelector('.top-bar');
+    if (topBar && !document.querySelector('.dashboard-controls')) {
+        const controlsHTML = `
+        <div class="dashboard-controls" style="display: flex; gap: 15px; align-items: center; margin-top: 10px;">
+            <select id="year-select" style="padding: 5px; border-radius: 4px;">
+                <option value="2023" ${state.currentYear === 2023 ? 'selected' : ''}>2023</option>
+                <option value="2024" ${state.currentYear === 2024 ? 'selected' : ''}>2024</option>
+                <option value="2025" ${state.currentYear === 2025 ? 'selected' : ''}>2025 (Start)</option>
+                <option value="2026" ${state.currentYear === 2026 ? 'selected' : ''}>2026</option>
+                <option value="2027" ${state.currentYear === 2027 ? 'selected' : ''}>2027</option>
+                <option value="2028" ${state.currentYear === 2028 ? 'selected' : ''}>2028</option>
+                <option value="2029" ${state.currentYear === 2029 ? 'selected' : ''}>2029</option>
+                <option value="2030" ${state.currentYear === 2030 ? 'selected' : ''}>2030</option>
+            </select>
+            <div class="sort-controls" style="margin-left: 20px; display: inline-block;">
+                 <label><input type="checkbox" id="sort-status" ${state.sortByStatus ? 'checked' : ''}> Sort by Status</label>
+            </div>
+        </div>
+        `;
+        topBar.insertAdjacentHTML('beforeend', controlsHTML); // Append to header
+
+        // Attach listeners
+        document.getElementById('year-select').addEventListener('change', (e) => {
+            state.currentYear = parseInt(e.target.value);
+            state.isEditorMode ? renderEditor() : renderDashboard();
+        });
+        document.getElementById('sort-status').addEventListener('change', (e) => {
+            state.sortByStatus = e.target.checked;
+            renderDashboard();
+        });
+    }
+
 
     if (state.currentView === 'overall') {
-        destroyCharts(); // Cleanup any existing charts
+        if (window.logToScreen) window.logToScreen('Delegating to renderOverallDashboard');
+        destroyCharts();
         renderOverallDashboard();
         return;
     }
@@ -971,23 +999,41 @@ function checkAuth() {
     }
 }
 
+function logToScreen(msg) {
+    console.log(msg);
+    const debugBox = document.getElementById('debug-log');
+    if (debugBox) {
+        debugBox.style.display = 'block';
+        debugBox.innerHTML += `<div>${new Date().toLocaleTimeString()} ${msg}</div>`;
+        debugBox.scrollTop = debugBox.scrollHeight;
+    }
+}
+
+// Initialize
+function initApp() {
+    console.log('App Initializing...');
+
+    // Expose render for the inline script
+    window.renderDashboard = renderDashboard;
+
+    // Just check auth. The inline script handles the login UI interaction.
+    checkAuth();
+}
+
 function handleLogin() {
     const passwordInput = document.getElementById('login-password');
     const errorMsg = document.getElementById('login-error');
 
-    // Safety check
     if (!passwordInput) {
-        console.error("Critical: Password input missing");
-        alert("System Error: Login input missing. Please refresh.");
+        logToScreen("Critical: Password input missing");
         return;
     }
 
-    const password = passwordInput.value.trim(); // Trim whitespace
-
-    console.log('Attempting login with:', password);
+    const password = passwordInput.value.trim();
+    logToScreen(`Attempting login: "${password}"`); // Quote to show spaces
 
     if (password === 'nlb2030') {
-        console.log('Password correct!');
+        logToScreen('Password match. Authenticating...');
         try {
             sessionStorage.setItem('nlb_auth', 'true');
 
@@ -1003,21 +1049,18 @@ function handleLogin() {
                 renderDashboard();
             } catch (renderErr) {
                 console.error("Render Error:", renderErr);
-                alert("Login successful, but Dashboard failed to render. Check Console.");
+                logToScreen("Render Error: " + renderErr);
             }
         } catch (e) {
-            console.error("Storage Error:", e);
-            alert("Login System Error: " + e.message);
+            logToScreen("ERROR: " + e.message);
         }
     } else {
-        console.log('Password incorrect');
+        logToScreen('Password mismatch');
         if (errorMsg) {
             errorMsg.style.display = 'block';
-            errorMsg.textContent = "Incorrect code"; // visual feedback
+            errorMsg.textContent = "Incorrect code";
             passwordInput.value = '';
             passwordInput.focus();
-        } else {
-            alert("Incorrect access code");
         }
     }
 }
@@ -1031,41 +1074,10 @@ viewButtons.forEach(btn => {
 
 if (editorButton) editorButton.addEventListener('click', toggleEditor);
 
-// Initialize
-function initApp() {
-    console.log('App Initializing...');
-
-    // Login Event Listeners
-    const loginBtn = document.getElementById('login-btn');
-    const passwordInput = document.getElementById('login-password');
-
-    if (loginBtn) {
-        console.log('Login Button found');
-        loginBtn.addEventListener('click', (e) => {
-            console.log('Login Button Clicked');
-            e.preventDefault();
-            handleLogin();
-        });
-    } else {
-        console.error('Login Button NOT found - Check HTML ID');
-    }
-
-    if (passwordInput) {
-        passwordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                handleLogin();
-            }
-        });
-    }
-
-    checkAuth();
-}
-
 // Run immediately (Module is deferred by default, so DOM is likely ready)
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
 } else {
     initApp();
 }
-```
+
