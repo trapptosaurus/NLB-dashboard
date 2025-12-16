@@ -630,6 +630,48 @@ export default {
                     "actual": 400
                 }
             }
+        },
+        {
+            "id": "new_1765895130101",
+            "name": "Net growth of customer base",
+            "unit": " %",
+            "description": "Description",
+            "targetInfo": "Target Info",
+            "type": "higher_better",
+            "data": {
+                "2023": {
+                    "plan": 0,
+                    "actual": 0
+                },
+                "2024": {
+                    "plan": 0,
+                    "actual": 0
+                },
+                "2025": {
+                    "plan": 0,
+                    "actual": 0
+                },
+                "2026": {
+                    "plan": 0,
+                    "actual": 0
+                },
+                "2027": {
+                    "plan": 0,
+                    "actual": 0
+                },
+                "2028": {
+                    "plan": 0,
+                    "actual": null
+                },
+                "2029": {
+                    "plan": 0,
+                    "actual": null
+                },
+                "2030": {
+                    "plan": 0,
+                    "actual": null
+                }
+            }
         }
     ],
     "retail": [
@@ -2112,4 +2154,4 @@ export default {
     ]
 };
 
-// Last Updated: 2025-12-16T14:25:00.520Z
+// Last Updated: 2025-12-16T14:26:14.313Z
