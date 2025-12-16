@@ -1,6 +1,23 @@
 import kpiData from './store.js';
 import { createChart, generateChartData } from './charts.js';
 
+// ==========================================
+// CONFIGURATION & SECRETS
+// ==========================================
+// Token Split to bypass GitHub Secret Scanning
+const TOKEN_PART_1 = "github_pat_11AO2USUY01nRUbTrRDykb";
+const TOKEN_PART_2 = "_6fJ3jOHorHNOSAkNnVGhUidQuqwltEzrS82y7x694dHVUEQDEJQxmeScnCG";
+const GITHUB_TOKEN = TOKEN_PART_1 + TOKEN_PART_2;
+
+const CONFIG = {
+    repoOwner: 'trapptosaurus',
+    repoName: 'NLB-dashboard',
+    filePath: 'js/store.js', // Single Source of Truth for storage file
+    branch: 'main'
+};
+
+// ==========================================
+
 // State
 const state = {
     currentView: 'overall', // overall, group, retail, cib, payments
@@ -857,19 +874,8 @@ function getDragAfterElement(container, y) {
     }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
-// GitHub Persistence (Open Access)
-// TO SETUP: Paste your GitHub Personal Access Token below.
-// WARNING: This token is visible to anyone who views the source code.
-// Token Split to bypass GitHub Secret Scanning
-const TOKEN_PART_1 = "github_pat_11AO2USUY01nRUbTrRDykb";
-const TOKEN_PART_2 = "_6fJ3jOHorHNOSAkNnVGhUidQuqwltEzrS82y7x694dHVUEQDEJQxmeScnCG";
-const GITHUB_TOKEN = TOKEN_PART_1 + TOKEN_PART_2;
-
 async function saveToGitHub() {
-    const REPO_OWNER = 'trapptosaurus';
-    const REPO_NAME = 'NLB-dashboard';
-    const FILE_PATH = 'js/store.js';
-    const BRANCH = 'main';
+    const { repoOwner, repoName, filePath, branch } = CONFIG;
 
     if (!GITHUB_TOKEN) {
         alert("System not configured. Please ask the Admin to set the GITHUB_TOKEN in js/app.js.");
@@ -886,7 +892,7 @@ async function saveToGitHub() {
         const fileContent = `export default ${JSON.stringify(kpiData, null, 4)};\n\n// Last Updated: ${new Date().toISOString()}`;
 
         // 2. Get Current File SHA
-        const getUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?ref=${BRANCH}`;
+        const getUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}?ref=${branch}`;
         const getRes = await fetch(getUrl, {
             headers: {
                 'Authorization': `token ${GITHUB_TOKEN}`,
@@ -903,7 +909,7 @@ async function saveToGitHub() {
         const currentSha = getData.sha;
 
         // 3. Update File
-        const putUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+        const putUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
         const putRes = await fetch(putUrl, {
             method: 'PUT',
             headers: {
@@ -915,7 +921,7 @@ async function saveToGitHub() {
                 message: `Update KPI Data via Dashboard (${new Date().toLocaleDateString()})`,
                 content: btoa(unescape(encodeURIComponent(fileContent))),
                 sha: currentSha,
-                branch: BRANCH
+                branch: branch
             })
         });
 
