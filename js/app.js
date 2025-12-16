@@ -969,24 +969,57 @@ function switchView(viewName) {
 }
 
 function toggleEditor() {
-    // Password Protection
-    const pw = prompt("Enter Admin Password for Editor:");
-    if (pw !== 'navi') {
-        alert("Access Denied");
-        return;
+    // Show Modal instead of prompt
+    const modal = document.getElementById('editor-modal');
+    const input = document.getElementById('editor-password-input');
+    const btn = document.getElementById('editor-login-btn');
+    const cancel = document.getElementById('editor-cancel-btn');
+    const error = document.getElementById('editor-error');
+
+    if (modal) {
+        modal.style.display = 'flex';
+        input.value = '';
+        input.focus();
+        error.style.display = 'none';
+
+        const unlock = () => {
+            if (input.value === 'navi') {
+                modal.style.display = 'none';
+                // Proceed to Editor code
+                state.isEditorMode = true;
+                viewButtons.forEach(b => b.classList.remove('active'));
+                editorButton.classList.add('active');
+                dashboardView.classList.remove('active');
+                editorView.classList.add('active');
+                pageTitle.textContent = 'Data Editor';
+                renderEditor();
+            } else {
+                error.style.display = 'block';
+                input.value = '';
+            }
+        };
+
+        // Remove old listeners to prevent stacking
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        newBtn.addEventListener('click', unlock);
+
+        // Handle Enter key
+        const newInput = input.cloneNode(true);
+        input.parentNode.replaceChild(newInput, input);
+        newInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') unlock();
+        });
+        // Refocus after replace
+        setTimeout(() => newInput.focus(), 0);
+
+        // Cancel
+        const newCancel = cancel.cloneNode(true);
+        cancel.parentNode.replaceChild(newCancel, cancel);
+        newCancel.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
     }
-
-    state.isEditorMode = true;
-
-    viewButtons.forEach(btn => btn.classList.remove('active'));
-    editorButton.classList.add('active');
-
-    dashboardView.classList.remove('active');
-    editorView.classList.add('active');
-
-    pageTitle.textContent = 'Data Editor';
-
-    renderEditor();
 }
 
 // Authentication Logic

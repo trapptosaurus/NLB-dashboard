@@ -33,6 +33,20 @@
         </div>
     </div>
 
+    <!-- Editor Auth Modal -->
+    <div id="editor-modal" class="login-overlay" style="display: none; z-index: 2000; background: rgba(0,0,0,0.5);">
+        <div class="login-box" style="width: 300px;">
+            <h3>Editor Access</h3>
+            <div class="input-group">
+                <input type="password" id="editor-password-input" placeholder="Admin Password">
+                <button id="editor-login-btn">Unlock</button>
+            </div>
+            <div id="editor-error" class="login-error">Incorrect password</div>
+            <button id="editor-cancel-btn"
+                style="background: none; border: none; color: #666; font-size: 0.8rem; margin-top: 10px; cursor: pointer; text-decoration: underline;">Cancel</button>
+        </div>
+    </div>
+
     <div class="app-container" style="display: none;">
         <aside class="sidebar">
             <div class="logo-area">
