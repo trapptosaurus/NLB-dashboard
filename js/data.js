@@ -1,4 +1,4 @@
-const kpiData = {
+export default {
     "group": [
         {
             "id": "recurring_revenue",
