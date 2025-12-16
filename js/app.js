@@ -921,7 +921,7 @@ async function saveToGitHub() {
 
         if (!putRes.ok) throw new Error('Failed to commit changes.');
 
-        alert('✅ Success! Data saved to GitHub.\nChanges will appear after the site rebuilds (1-2 mins).');
+        alert('✅ Changes saved.');
 
     } catch (err) {
         console.error(err);
