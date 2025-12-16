@@ -435,31 +435,31 @@ export default {
                 },
                 "2024": {
                     "plan": 9,
-                    "actual": 9
+                    "actual": 12.57
                 },
                 "2025": {
                     "plan": 10,
-                    "actual": 10
+                    "actual": 17.14
                 },
                 "2026": {
                     "plan": 25,
-                    "actual": 25
+                    "actual": 21.71
                 },
                 "2027": {
                     "plan": 35,
-                    "actual": 35
+                    "actual": 26.29
                 },
                 "2028": {
                     "plan": 38,
-                    "actual": null
+                    "actual": 30.86
                 },
                 "2029": {
                     "plan": 39,
-                    "actual": null
+                    "actual": 35.42
                 },
                 "2030": {
                     "plan": 40,
-                    "actual": null
+                    "actual": 40
                 }
             }
         },
@@ -477,31 +477,31 @@ export default {
                 },
                 "2024": {
                     "plan": 22.5,
-                    "actual": 22.5
+                    "actual": 24.29
                 },
                 "2025": {
                     "plan": 25,
-                    "actual": 25
+                    "actual": 28.57
                 },
                 "2026": {
                     "plan": 30,
-                    "actual": 30
+                    "actual": 32.86
                 },
                 "2027": {
                     "plan": 35,
-                    "actual": 35
+                    "actual": 37.14
                 },
                 "2028": {
                     "plan": 40,
-                    "actual": null
+                    "actual": 41.43
                 },
                 "2029": {
                     "plan": 45,
-                    "actual": null
+                    "actual": 45.71
                 },
                 "2030": {
                     "plan": 50,
-                    "actual": null
+                    "actual": 50
                 }
             }
         },
@@ -519,31 +519,31 @@ export default {
                 },
                 "2024": {
                     "plan": 28.8,
-                    "actual": 28.8
+                    "actual": 29.09
                 },
                 "2025": {
                     "plan": 32,
-                    "actual": 32
+                    "actual": 32.57
                 },
                 "2026": {
                     "plan": 36,
-                    "actual": 36
+                    "actual": 36.06
                 },
                 "2027": {
                     "plan": 40,
-                    "actual": 40
+                    "actual": 39.54
                 },
                 "2028": {
                     "plan": 44,
-                    "actual": null
+                    "actual": 43.03
                 },
                 "2029": {
                     "plan": 48,
-                    "actual": null
+                    "actual": 46.51
                 },
                 "2030": {
                     "plan": 50,
-                    "actual": null
+                    "actual": 50
                 }
             }
         }
@@ -2028,4 +2028,4 @@ export default {
     ]
 };
 
-// Last Updated: 2025-12-16T12:47:11.856Z
+// Last Updated: 2025-12-16T12:54:57.479Z
