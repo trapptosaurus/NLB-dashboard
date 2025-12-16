@@ -546,6 +546,48 @@ export default {
                     "actual": 50
                 }
             }
+        },
+        {
+            "id": "new_1765889727207",
+            "name": "Retail clients (incl. micro)",
+            "unit": "mio EUR",
+            "description": "Description",
+            "targetInfo": "Target Info",
+            "type": "higher_better",
+            "data": {
+                "2023": {
+                    "plan": 2.7,
+                    "actual": 0
+                },
+                "2024": {
+                    "plan": 2.921,
+                    "actual": 0
+                },
+                "2025": {
+                    "plan": 0,
+                    "actual": 0
+                },
+                "2026": {
+                    "plan": 0,
+                    "actual": 0
+                },
+                "2027": {
+                    "plan": 0,
+                    "actual": 0
+                },
+                "2028": {
+                    "plan": 0,
+                    "actual": null
+                },
+                "2029": {
+                    "plan": 0,
+                    "actual": null
+                },
+                "2030": {
+                    "plan": 3,
+                    "actual": null
+                }
+            }
         }
     ],
     "retail": [
@@ -2028,4 +2070,4 @@ export default {
     ]
 };
 
-// Last Updated: 2025-12-16T12:54:57.479Z
+// Last Updated: 2025-12-16T13:02:02.967Z
