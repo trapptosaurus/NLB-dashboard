@@ -1078,7 +1078,15 @@ function handleLogin() {
 // Event Listeners for Switch View (Global)
 viewButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        switchView(btn.dataset.view);
+        const view = btn.dataset.view;
+        if (view === 'editor') {
+            const pw = prompt("Enter Admin Password for Editor:");
+            if (pw !== 'navi') {
+                alert("Access Denied");
+                return;
+            }
+        }
+        switchView(view);
     });
 });
 
