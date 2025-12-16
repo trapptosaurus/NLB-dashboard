@@ -546,219 +546,9 @@ export default {
                     "actual": null
                 }
             }
-        },
-        {
-            "id": "new_1765889727207",
-            "name": "Retail clients (incl. micro)",
-            "unit": "mio EUR",
-            "description": "Description",
-            "targetInfo": "Target Info",
-            "type": "higher_better",
-            "data": {
-                "2023": {
-                    "plan": 2.7,
-                    "actual": 2.7
-                },
-                "2024": {
-                    "plan": 2.74,
-                    "actual": 2.921
-                },
-                "2025": {
-                    "plan": 2.76,
-                    "actual": 2.925
-                },
-                "2026": {
-                    "plan": 2.83,
-                    "actual": null
-                },
-                "2027": {
-                    "plan": 2.78,
-                    "actual": null
-                },
-                "2028": {
-                    "plan": 2.91,
-                    "actual": null
-                },
-                "2029": {
-                    "plan": 2.96,
-                    "actual": null
-                },
-                "2030": {
-                    "plan": 3,
-                    "actual": null
-                }
-            }
-        },
-        {
-            "id": "new_1765894789193",
-            "name": "Revenue per active client",
-            "unit": "EUR",
-            "description": "Description",
-            "targetInfo": "Target Info",
-            "type": "higher_better",
-            "data": {
-                "2023": {
-                    "plan": 270,
-                    "actual": 270
-                },
-                "2024": {
-                    "plan": 288.57,
-                    "actual": 308
-                },
-                "2025": {
-                    "plan": 307.14,
-                    "actual": 303
-                },
-                "2026": {
-                    "plan": 325.71,
-                    "actual": null
-                },
-                "2027": {
-                    "plan": 344.29,
-                    "actual": null
-                },
-                "2028": {
-                    "plan": 362.86,
-                    "actual": null
-                },
-                "2029": {
-                    "plan": 382.43,
-                    "actual": null
-                },
-                "2030": {
-                    "plan": 400,
-                    "actual": null
-                }
-            }
-        },
-        {
-            "id": "new_1765895130101",
-            "name": "Net growth of customer base",
-            "unit": " %",
-            "description": "Description",
-            "targetInfo": "Target Info",
-            "type": "higher_better",
-            "data": {
-                "2023": {
-                    "plan": 1,
-                    "actual": 0
-                },
-                "2024": {
-                    "plan": 0,
-                    "actual": 0
-                },
-                "2025": {
-                    "plan": 0,
-                    "actual": 0
-                },
-                "2026": {
-                    "plan": 0,
-                    "actual": 0
-                },
-                "2027": {
-                    "plan": 0,
-                    "actual": 0
-                },
-                "2028": {
-                    "plan": 0,
-                    "actual": null
-                },
-                "2029": {
-                    "plan": 0,
-                    "actual": null
-                },
-                "2030": {
-                    "plan": 2,
-                    "actual": null
-                }
-            }
-        },
-        {
-            "id": "new_1765896645664",
-            "name": "New KPI",
-            "unit": "Unit",
-            "description": "Description",
-            "targetInfo": "Target Info",
-            "type": "higher_better",
-            "data": {
-                "2023": {
-                    "plan": 0,
-                    "actual": 0
-                },
-                "2024": {
-                    "plan": 0,
-                    "actual": 0
-                },
-                "2025": {
-                    "plan": 0,
-                    "actual": 0
-                },
-                "2026": {
-                    "plan": 0,
-                    "actual": 0
-                },
-                "2027": {
-                    "plan": 0,
-                    "actual": 0
-                },
-                "2028": {
-                    "plan": 0,
-                    "actual": null
-                },
-                "2029": {
-                    "plan": 0,
-                    "actual": null
-                },
-                "2030": {
-                    "plan": 0,
-                    "actual": null
-                }
-            }
         }
     ],
     "retail": [
-        {
-            "id": "retail_clients",
-            "name": "Retail clients (incl. micro)",
-            "unit": "millions",
-            "description": "Total number of retail and micro clients",
-            "targetInfo": "Driven by regional penetration and digital acquisition",
-            "type": "higher_better",
-            "data": {
-                "2023": {
-                    "plan": 2.24,
-                    "actual": 2.24
-                },
-                "2024": {
-                    "plan": 2.52,
-                    "actual": 2.52
-                },
-                "2025": {
-                    "plan": 2.8,
-                    "actual": 2.8
-                },
-                "2026": {
-                    "plan": 2.85,
-                    "actual": 2.85
-                },
-                "2027": {
-                    "plan": 2.9,
-                    "actual": 2.78
-                },
-                "2028": {
-                    "plan": 2.93,
-                    "actual": null
-                },
-                "2029": {
-                    "plan": 2.96,
-                    "actual": null
-                },
-                "2030": {
-                    "plan": 3,
-                    "actual": null
-                }
-            }
-        },
         {
             "id": "retail_revenue_per_client",
             "name": "Revenue per active client",
@@ -1091,6 +881,48 @@ export default {
                 },
                 "2030": {
                     "plan": 30,
+                    "actual": null
+                }
+            }
+        },
+        {
+            "id": "new_1765889727207",
+            "name": "Retail clients (incl. micro)",
+            "unit": "mio EUR",
+            "description": "Total number of retail and micro clientson",
+            "targetInfo": "Target Info",
+            "type": "higher_better",
+            "data": {
+                "2023": {
+                    "plan": 2.7,
+                    "actual": 2.7
+                },
+                "2024": {
+                    "plan": 2.74,
+                    "actual": 2.921
+                },
+                "2025": {
+                    "plan": 2.76,
+                    "actual": 2.925
+                },
+                "2026": {
+                    "plan": 2.83,
+                    "actual": null
+                },
+                "2027": {
+                    "plan": 2.78,
+                    "actual": null
+                },
+                "2028": {
+                    "plan": 2.91,
+                    "actual": null
+                },
+                "2029": {
+                    "plan": 2.96,
+                    "actual": null
+                },
+                "2030": {
+                    "plan": 3,
                     "actual": null
                 }
             }
@@ -2196,4 +2028,4 @@ export default {
     ]
 };
 
-// Last Updated: 2025-12-16T15:18:55.507Z
+// Last Updated: 2025-12-16T15:28:29.522Z
