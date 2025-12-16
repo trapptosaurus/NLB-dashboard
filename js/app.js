@@ -989,7 +989,9 @@ function toggleEditor() {
         error.style.display = 'none';
 
         const unlock = () => {
-            if (input.value === 'navi') {
+            // Re-query input because it might have been replaced/cloned
+            const currentInput = document.getElementById('editor-password-input');
+            if (currentInput.value.trim() === 'navi') {
                 modal.style.display = 'none';
                 // Proceed to Editor code
                 state.isEditorMode = true;
@@ -1001,7 +1003,8 @@ function toggleEditor() {
                 renderEditor();
             } else {
                 error.style.display = 'block';
-                input.value = '';
+                currentInput.value = '';
+                currentInput.focus();
             }
         };
 
