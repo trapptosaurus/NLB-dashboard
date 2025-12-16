@@ -969,6 +969,13 @@ function switchView(viewName) {
 }
 
 function toggleEditor() {
+    // Password Protection
+    const pw = prompt("Enter Admin Password for Editor:");
+    if (pw !== 'navi') {
+        alert("Access Denied");
+        return;
+    }
+
     state.isEditorMode = true;
 
     viewButtons.forEach(btn => btn.classList.remove('active'));
@@ -1078,15 +1085,7 @@ function handleLogin() {
 // Event Listeners for Switch View (Global)
 viewButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        const view = btn.dataset.view;
-        if (view === 'editor') {
-            const pw = prompt("Enter Admin Password for Editor:");
-            if (pw !== 'navi') {
-                alert("Access Denied");
-                return;
-            }
-        }
-        switchView(view);
+        switchView(btn.dataset.view);
     });
 });
 
