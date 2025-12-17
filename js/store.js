@@ -550,48 +550,6 @@ export default {
     ],
     "retail": [
         {
-            "id": "new_1765889727207",
-            "name": "Retail clients (incl. micro)",
-            "unit": "mio EUR",
-            "description": "Total number of retail and micro clientson",
-            "targetInfo": "Target Info",
-            "type": "higher_better",
-            "data": {
-                "2023": {
-                    "plan": 2.7,
-                    "actual": 2.7
-                },
-                "2024": {
-                    "plan": 2.74,
-                    "actual": 2.921
-                },
-                "2025": {
-                    "plan": 2.76,
-                    "actual": 2.925
-                },
-                "2026": {
-                    "plan": 2.83,
-                    "actual": null
-                },
-                "2027": {
-                    "plan": 2.78,
-                    "actual": null
-                },
-                "2028": {
-                    "plan": 2.91,
-                    "actual": null
-                },
-                "2029": {
-                    "plan": 2.96,
-                    "actual": null
-                },
-                "2030": {
-                    "plan": 3,
-                    "actual": null
-                }
-            }
-        },
-        {
             "id": "retail_revenue_per_client",
             "name": "Revenue per active client",
             "unit": "EUR",
@@ -926,6 +884,48 @@ export default {
                     "actual": null
                 }
             }
+        },
+        {
+            "id": "new_1765889727207",
+            "name": "Retail clients (incl. micro)",
+            "unit": "mio EUR",
+            "description": "Total number of retail and micro clientson",
+            "targetInfo": "Target Info",
+            "type": "higher_better",
+            "data": {
+                "2023": {
+                    "plan": 2.7,
+                    "actual": 2.7
+                },
+                "2024": {
+                    "plan": 2.74,
+                    "actual": 2.921
+                },
+                "2025": {
+                    "plan": 2.76,
+                    "actual": 2.925
+                },
+                "2026": {
+                    "plan": 2.83,
+                    "actual": null
+                },
+                "2027": {
+                    "plan": 2.78,
+                    "actual": null
+                },
+                "2028": {
+                    "plan": 2.91,
+                    "actual": null
+                },
+                "2029": {
+                    "plan": 2.96,
+                    "actual": null
+                },
+                "2030": {
+                    "plan": 3,
+                    "actual": null
+                }
+            }
         }
     ],
     "cib": [
@@ -1022,31 +1022,31 @@ export default {
             "type": "higher_better",
             "data": {
                 "2023": {
-                    "plan": 2.56,
-                    "actual": 2.56
-                },
-                "2024": {
-                    "plan": 2.88,
-                    "actual": 2.88
-                },
-                "2025": {
                     "plan": 3.2,
                     "actual": 3.2
                 },
+                "2024": {
+                    "plan": 3.31,
+                    "actual": 3.68
+                },
+                "2025": {
+                    "plan": 3.43,
+                    "actual": 3.66
+                },
                 "2026": {
-                    "plan": 3.4,
-                    "actual": 3.4
+                    "plan": 3.54,
+                    "actual": null
                 },
                 "2027": {
-                    "plan": 3.6,
-                    "actual": 3.6
+                    "plan": 3.67,
+                    "actual": null
                 },
                 "2028": {
-                    "plan": 3.8,
+                    "plan": 3.77,
                     "actual": null
                 },
                 "2029": {
-                    "plan": 3.9,
+                    "plan": 3.89,
                     "actual": null
                 },
                 "2030": {
@@ -2028,4 +2028,4 @@ export default {
     ]
 };
 
-// Last Updated: 2025-12-17T11:07:39.407Z
+// Last Updated: 2025-12-17T11:48:46.892Z
