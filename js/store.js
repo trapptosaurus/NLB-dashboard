@@ -550,48 +550,6 @@ export default {
     ],
     "retail": [
         {
-            "id": "new_1765889727207",
-            "name": "Retail clients (incl. micro)",
-            "unit": "mio EUR",
-            "description": "Total number of retail and micro clientson",
-            "targetInfo": "Target Info",
-            "type": "higher_better",
-            "data": {
-                "2023": {
-                    "plan": 2.7,
-                    "actual": 2.7
-                },
-                "2024": {
-                    "plan": 2.74,
-                    "actual": 2.921
-                },
-                "2025": {
-                    "plan": 2.76,
-                    "actual": 2.925
-                },
-                "2026": {
-                    "plan": 2.83,
-                    "actual": null
-                },
-                "2027": {
-                    "plan": 2.78,
-                    "actual": null
-                },
-                "2028": {
-                    "plan": 2.91,
-                    "actual": null
-                },
-                "2029": {
-                    "plan": 2.96,
-                    "actual": null
-                },
-                "2030": {
-                    "plan": 3,
-                    "actual": null
-                }
-            }
-        },
-        {
             "id": "retail_revenue_per_client",
             "name": "Revenue per active client",
             "unit": "EUR",
@@ -642,35 +600,35 @@ export default {
             "type": "higher_better",
             "data": {
                 "2023": {
-                    "plan": 0.4,
-                    "actual": 0.4
-                },
-                "2024": {
-                    "plan": 0.45,
-                    "actual": 0.45
-                },
-                "2025": {
-                    "plan": 0.5,
-                    "actual": 0.5
-                },
-                "2026": {
-                    "plan": 0.8,
-                    "actual": 0.8
-                },
-                "2027": {
                     "plan": 1,
                     "actual": 1
                 },
+                "2024": {
+                    "plan": 1.14,
+                    "actual": 3.1
+                },
+                "2025": {
+                    "plan": 1.29,
+                    "actual": 1
+                },
+                "2026": {
+                    "plan": 1.43,
+                    "actual": null
+                },
+                "2027": {
+                    "plan": 1.57,
+                    "actual": null
+                },
                 "2028": {
-                    "plan": 1.2,
+                    "plan": 1.71,
                     "actual": null
                 },
                 "2029": {
-                    "plan": 1.4,
+                    "plan": 1.86,
                     "actual": null
                 },
                 "2030": {
-                    "plan": 1.5,
+                    "plan": 2,
                     "actual": null
                 }
             }
@@ -684,31 +642,31 @@ export default {
             "type": "higher_better",
             "data": {
                 "2023": {
-                    "plan": 24,
-                    "actual": 24
+                    "plan": 31,
+                    "actual": 31
                 },
                 "2024": {
-                    "plan": 27,
-                    "actual": 27
+                    "plan": 33.71,
+                    "actual": 26
                 },
                 "2025": {
-                    "plan": 30,
-                    "actual": 30
+                    "plan": 36.43,
+                    "actual": 21
                 },
                 "2026": {
-                    "plan": 35,
-                    "actual": 35
+                    "plan": 39.14,
+                    "actual": null
                 },
                 "2027": {
-                    "plan": 40,
-                    "actual": 40
+                    "plan": 41.86,
+                    "actual": null
                 },
                 "2028": {
-                    "plan": 44,
+                    "plan": 44.57,
                     "actual": null
                 },
                 "2029": {
-                    "plan": 47,
+                    "plan": 47.29,
                     "actual": null
                 },
                 "2030": {
@@ -726,31 +684,31 @@ export default {
             "type": "higher_better",
             "data": {
                 "2023": {
-                    "plan": 37.6,
-                    "actual": 37.6
-                },
-                "2024": {
-                    "plan": 42.3,
-                    "actual": 42.3
-                },
-                "2025": {
                     "plan": 47,
                     "actual": 47
                 },
+                "2024": {
+                    "plan": 53.14,
+                    "actual": 76
+                },
+                "2025": {
+                    "plan": 59.23,
+                    "actual": 78
+                },
                 "2026": {
-                    "plan": 60,
-                    "actual": 60
+                    "plan": 65.43,
+                    "actual": null
                 },
                 "2027": {
-                    "plan": 70,
-                    "actual": 70
+                    "plan": 71.57,
+                    "actual": null
                 },
                 "2028": {
-                    "plan": 80,
+                    "plan": 77.71,
                     "actual": null
                 },
                 "2029": {
-                    "plan": 85,
+                    "plan": 83.86,
                     "actual": null
                 },
                 "2030": {
@@ -923,6 +881,48 @@ export default {
                 },
                 "2030": {
                     "plan": 30,
+                    "actual": null
+                }
+            }
+        },
+        {
+            "id": "new_1765889727207",
+            "name": "Retail clients (incl. micro)",
+            "unit": "mio EUR",
+            "description": "Total number of retail and micro clientson",
+            "targetInfo": "Target Info",
+            "type": "higher_better",
+            "data": {
+                "2023": {
+                    "plan": 2.7,
+                    "actual": 2.7
+                },
+                "2024": {
+                    "plan": 2.74,
+                    "actual": 2.921
+                },
+                "2025": {
+                    "plan": 2.76,
+                    "actual": 2.925
+                },
+                "2026": {
+                    "plan": 2.83,
+                    "actual": null
+                },
+                "2027": {
+                    "plan": 2.78,
+                    "actual": null
+                },
+                "2028": {
+                    "plan": 2.91,
+                    "actual": null
+                },
+                "2029": {
+                    "plan": 2.96,
+                    "actual": null
+                },
+                "2030": {
+                    "plan": 3,
                     "actual": null
                 }
             }
@@ -2028,4 +2028,4 @@ export default {
     ]
 };
 
-// Last Updated: 2025-12-16T20:12:12.963Z
+// Last Updated: 2025-12-17T08:23:51.688Z
